@@ -1,17 +1,8 @@
-import { Vector3, Quaternion , MathUtils } from "three";
+import { Vector3, Quaternion, MathUtils, Matrix4 } from "three";
+
 import { Physics } from "./physics";
 export class SkyDiver {
   constructor() {
-    const tiltAngle = MathUtils.degToRad(45); 
-    const tiltAxis = new Vector3(1, 0, 0); 
-
-    this.tiltedOrientation = new Quaternion().setFromAxisAngle(tiltAxis, tiltAngle);
-    this.normalOrientation = new Quaternion(); 
-
-    this.orientation = this.tiltedOrientation.clone();
-    this.updateAxesFromOrientation();
-
-    this.transitionProgress = 1;
     this.parachuteOpend = false;
     this.position = new Vector3(3, 5000, 0);
     this.velocity = new Vector3(0, 0, 0);
@@ -22,28 +13,26 @@ export class SkyDiver {
     this.bodyUp = new Vector3(0, 1, 0);
     this.bodyRight = new Vector3(1, 0, 0);
     this.bodyFront = new Vector3(0, 0, -1);
-    //this.orientation = new Quaternion();
+    this.orientation = new Quaternion();
     this.parachuteRotationAngle = 0; // Degrees
     this.maxParachuteAngle = 30; // Degrees, max rotation
     this.rotationSpeed = 1; // Degrees per second
   }
-  applyForce(force) {
-    this.acceleration.copy(force.clone().divideScalar(this.mass));
-  }
   setModel(model) {
     this.model = model;
   }
-  
+
   setParachute(model) {
     this.parachute = model;
   }
-  
+  applyForce(force) {
+    this.acceleration.copy(force.clone().divideScalar(this.mass));
+  }
   openParachute() {
     if (this.parachuteOpend) return;
-    //this.orientation = new Quaternion();
+    this.orientation = new Quaternion();
     this.parachuteOpend = true;
     this.area += this.parachuteArea;
-    this.transitionProgress = 0;
   }
   update(delta) {
     this.velocity.add(this.acceleration.clone().multiplyScalar(delta));
@@ -58,13 +47,6 @@ export class SkyDiver {
     }
 
     this.position.add(deltaP);
-    if (this.parachuteOpend && this.transitionProgress < 1) {
-      this.transitionProgress += delta;
-      if (this.transitionProgress > 1) this.transitionProgress = 1;
-  
-      this.orientation.slerp(this.normalOrientation, this.transitionProgress);
-      this.updateAxesFromOrientation();
-    }
 
     // Update parachute turning while it's open
     if (this.parachuteOpend && this.parachuteRotationAngle !== 0) {
@@ -80,20 +62,6 @@ export class SkyDiver {
       if (Math.abs(this.parachuteRotationAngle) < 0.01) {
         this.parachuteRotationAngle = 0;
       }
-    }
-    if (this.model) {
-      const modelOffset = this.bodyUp.clone().multiplyScalar(-1.5); 
-      this.model.position.copy(this.position.clone().add(modelOffset));
-      this.model.quaternion.copy(this.orientation);
-    }
-    
-    if (this.parachute) {
-      const backOffset = this.bodyFront.clone().multiplyScalar(0.3); 
-      const upOffset = this.bodyUp.clone().multiplyScalar(2);      
-
-      this.parachute.position.copy(this.position.clone().add(upOffset).add(backOffset));
-      this.parachute.quaternion.copy(this.orientation);
-      this.parachute.visible = this.parachuteOpend;
     }
   }
   rotateParachuteLeft(deltaTime) {
@@ -134,6 +102,26 @@ export class SkyDiver {
       .normalize();
     this.bodyUp = baseUp.clone().applyQuaternion(this.orientation).normalize();
   }
+  syncModelRotation() {
+    if (!this.model) return;
+
+    // Construct a rotation matrix from bodyRight, bodyUp, bodyFront
+    const m = new Matrix4();
+
+    // Column-major order: X (right), Y (up), Z (forward)
+    if (this.parachuteOpend)
+      m.makeBasis(this.bodyRight, this.bodyUp, this.bodyFront);
+    else {
+      m.makeBasis(this.bodyRight, this.bodyFront, this.bodyUp);
+    }
+
+    // Apply this matrix as a quaternion
+    this.model.quaternion.setFromRotationMatrix(m);
+    const flip = new Quaternion();
+    flip.setFromAxisAngle(new Vector3(0, 1, 0), Math.PI); // flip around X
+    if(!this.parachuteOpend)
+    this.model.quaternion.multiply(flip); // apply flip
+  }
   addGuiFolder(gui) {
     this.folder = gui.addFolder("Skydiver Variables");
 
@@ -146,27 +134,27 @@ export class SkyDiver {
     this.positionFolder.add(this.position, "x").listen();
     this.positionFolder.add(this.position, "y").listen();
     this.positionFolder.add(this.position, "z").listen();
-    
+
     this.velocityFolder = this.folder.addFolder("velocity");
     this.velocityFolder.add(this.velocity, "x").listen();
     this.velocityFolder.add(this.velocity, "y").listen();
     this.velocityFolder.add(this.velocity, "z").listen();
-    
+
     this.accelerationFolder = this.folder.addFolder("acceleration");
     this.accelerationFolder.add(this.acceleration, "x").listen();
     this.accelerationFolder.add(this.acceleration, "y").listen();
     this.accelerationFolder.add(this.acceleration, "z").listen();
-    
+
     this.bodyUpFolder = this.folder.addFolder("bodyUp");
     this.bodyUpFolder.add(this.bodyUp, "x").listen();
     this.bodyUpFolder.add(this.bodyUp, "y").listen();
     this.bodyUpFolder.add(this.bodyUp, "z").listen();
-    
+
     this.bodyRightFolder = this.folder.addFolder("bodyRight");
     this.bodyRightFolder.add(this.bodyRight, "x").listen();
     this.bodyRightFolder.add(this.bodyRight, "y").listen();
     this.bodyRightFolder.add(this.bodyRight, "z").listen();
-    
+
     this.bodyFrontFolder = this.folder.addFolder("bodyFront");
     this.bodyFrontFolder.add(this.bodyFront, "x").listen();
     this.bodyFrontFolder.add(this.bodyFront, "y").listen();

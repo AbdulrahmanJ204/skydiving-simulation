@@ -269,10 +269,13 @@ const renderLoop = () => {
     bodyUpVec = skyDiver.bodyUp.clone();
   }
   
-  drawVector(bodyFrontVec, skyDiver.position, "bodyFront", "red");
-  drawVector(bodyRightVec, skyDiver.position, "bodyRight", "green");
-  drawVector(bodyUpVec, skyDiver.position, "bodyUp", "blue");
-
+  drawVector(skyDiver.bodyFront, skyDiver.position, "bodyFront", "red");
+  drawVector(skyDiver.bodyRight, skyDiver.position, "bodyRight", "green");
+  drawVector(skyDiver.bodyUp, skyDiver.position, "bodyUp", "blue");
+  skyDiver.syncModelRotation();
+  skydiverModel.position.copy(skyDiver.position)
+  skydiverModel.quaternion.copy(skyDiver.model.quaternion)
+  
   // Camera Update
   const skydiverPos = skydiverModel.position.clone();
 
