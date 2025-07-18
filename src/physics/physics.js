@@ -14,9 +14,12 @@ export class Physics {
     airDensity: 1.225,
     dragCoefficient: 0.005,
     liftCoefficient: 0.005,
+    liftCoefficientX: 0,
+    liftCoefficientZ: 0,
     wind: new Vector3(0, 0, 0),
     OMEGA: 7.2921159e-5,
     latitude: 90, // 0 to 180 and 0 to -180
+    AOA: 0,
   };
 
   constructor() {
@@ -30,7 +33,7 @@ export class Physics {
     );
     this.forces.set(
       "Lift Force",
-      new LiftForce({ name: "Lift Force", color: "cyan" })
+      new LiftForce({ name: "Lift Force", color: "purple" })
     );
     this.forces.set(
       "Coriolis Force",
@@ -45,19 +48,18 @@ export class Physics {
   applyForces(skyDiver) {
     this.totalForce.force.set(0, 0, 0);
     this.forces.forEach((force) => {
-      if (force.enabled)
-        this.totalForce.force.add(
-          force.calculateForce({
-            skydiver: skyDiver,
-            controllableVariables: Physics.controllableVariables,
-          })
-        );
+      this.totalForce.force.add(
+        force.calculateForce({
+          skydiver: skyDiver,
+          controllableVariables: Physics.controllableVariables,
+        })
+      );
     });
     skyDiver.applyForce(this.totalForce.force);
   }
   drawVectors(scene, skyDiverPos) {
     this.forces.forEach((force) => {
-      if (force.enabled && force.showArrowHelper)
+      if (force.showArrowHelper)
         this.drawVector(scene, force, skyDiverPos);
       else if (this.arrowHelpers.has(force.name))
         scene.remove(this.arrowHelpers.get(force.name));
@@ -71,7 +73,7 @@ export class Physics {
     const dir = force.force.clone();
     dir.normalize();
     const origin = pos.clone();
-    const length = force.force.length() / 10;
+    let length = force.force.clone().length() / 100;
     const hex = force.color.getHex();
 
     if (this.arrowHelpers.has(force.name))
@@ -83,12 +85,7 @@ export class Physics {
     );
     scene.add(this.arrowHelpers.get(force.name));
   }
-  static increaseDragCoef(value) {
-    Physics.controllableVariables.dragCoefficient += value;
-  }
-  static increaseLiftCoef(value) {
-    Physics.controllableVariables.liftCoefficient += value;
-  }
+
   addGuiFolder(gui) {
     this.folder = gui.addFolder("Physics Variables");
 
@@ -101,6 +98,8 @@ export class Physics {
     this.folder.add(Physics.controllableVariables, "airDensity").listen();
     this.folder.add(Physics.controllableVariables, "dragCoefficient").listen();
     this.folder.add(Physics.controllableVariables, "liftCoefficient").listen();
+    this.folder.add(Physics.controllableVariables, "liftCoefficientX").listen();
+    this.folder.add(Physics.controllableVariables, "liftCoefficientZ").listen();
     this.windFolder = this.folder.addFolder("Wind");
     this.windFolder.add(Physics.controllableVariables.wind, "x").listen();
     this.windFolder.add(Physics.controllableVariables.wind, "y").listen();

@@ -7,6 +7,7 @@ export class DragForce extends Force {
   }
   calculateForce({ skydiver, controllableVariables }) {
     //  * Fd = - 1/2 * p * Cd * A * |v|^2 * vVector
+    controllableVariables.dragCoefficient = skydiver.parachuteOpend ? 0.1 : 0.05;
     this.relativeVelocity = skydiver.velocity
       .clone()
       .sub(controllableVariables.wind);
