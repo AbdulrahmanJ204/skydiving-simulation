@@ -2,6 +2,16 @@ import { Vector3, Quaternion , MathUtils } from "three";
 import { Physics } from "./physics";
 export class SkyDiver {
   constructor() {
+    const tiltAngle = MathUtils.degToRad(45); 
+    const tiltAxis = new Vector3(1, 0, 0); 
+
+    this.tiltedOrientation = new Quaternion().setFromAxisAngle(tiltAxis, tiltAngle);
+    this.normalOrientation = new Quaternion(); 
+
+    this.orientation = this.tiltedOrientation.clone();
+    this.updateAxesFromOrientation();
+
+    this.transitionProgress = 1;
     this.parachuteOpend = false;
     this.position = new Vector3(3, 5000, 0);
     this.velocity = new Vector3(0, 0, 0);
@@ -12,7 +22,7 @@ export class SkyDiver {
     this.bodyUp = new Vector3(0, 1, 0);
     this.bodyRight = new Vector3(1, 0, 0);
     this.bodyFront = new Vector3(0, 0, -1);
-    this.orientation = new Quaternion();
+    //this.orientation = new Quaternion();
     this.parachuteRotationAngle = 0; // Degrees
     this.maxParachuteAngle = 30; // Degrees, max rotation
     this.rotationSpeed = 1; // Degrees per second
@@ -20,11 +30,20 @@ export class SkyDiver {
   applyForce(force) {
     this.acceleration.copy(force.clone().divideScalar(this.mass));
   }
+  setModel(model) {
+    this.model = model;
+  }
+  
+  setParachute(model) {
+    this.parachute = model;
+  }
+  
   openParachute() {
     if (this.parachuteOpend) return;
-    this.orientation = new Quaternion();
+    //this.orientation = new Quaternion();
     this.parachuteOpend = true;
     this.area += this.parachuteArea;
+    this.transitionProgress = 0;
   }
   update(delta) {
     this.velocity.add(this.acceleration.clone().multiplyScalar(delta));
@@ -39,6 +58,13 @@ export class SkyDiver {
     }
 
     this.position.add(deltaP);
+    if (this.parachuteOpend && this.transitionProgress < 1) {
+      this.transitionProgress += delta;
+      if (this.transitionProgress > 1) this.transitionProgress = 1;
+  
+      this.orientation.slerp(this.normalOrientation, this.transitionProgress);
+      this.updateAxesFromOrientation();
+    }
 
     // Update parachute turning while it's open
     if (this.parachuteOpend && this.parachuteRotationAngle !== 0) {
@@ -54,6 +80,20 @@ export class SkyDiver {
       if (Math.abs(this.parachuteRotationAngle) < 0.01) {
         this.parachuteRotationAngle = 0;
       }
+    }
+    if (this.model) {
+      const modelOffset = this.bodyUp.clone().multiplyScalar(-1.5); 
+      this.model.position.copy(this.position.clone().add(modelOffset));
+      this.model.quaternion.copy(this.orientation);
+    }
+    
+    if (this.parachute) {
+      const backOffset = this.bodyFront.clone().multiplyScalar(0.3); 
+      const upOffset = this.bodyUp.clone().multiplyScalar(2);      
+
+      this.parachute.position.copy(this.position.clone().add(upOffset).add(backOffset));
+      this.parachute.quaternion.copy(this.orientation);
+      this.parachute.visible = this.parachuteOpend;
     }
   }
   rotateParachuteLeft(deltaTime) {
