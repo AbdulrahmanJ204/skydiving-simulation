@@ -173,10 +173,10 @@ function updateOrientation(deltaTime) {
   let rotationSpeedDt = rotationSpeed * deltaTime;
   if (skyDiver.parachuteOpend) {
     if (keys["ArrowLeft"]) {
-      skyDiver.rotateParachuteLeft(deltaTime);
+      skyDiver.rotateParachuteL(deltaTime);
     }
     if (keys["ArrowRight"]) {
-      skyDiver.rotateParachuteRight(deltaTime);
+      skyDiver.rotateParachuteR(deltaTime);
     }
   } else {
     if (keys["ArrowLeft"]) {
@@ -254,27 +254,13 @@ const renderLoop = () => {
   physics.applyForces(skyDiver);
   skyDiver.update(dt);
   physics.drawVectors(scene, skyDiver.position);
-
-  let bodyFrontVec = skyDiver.bodyFront.clone();
-  let bodyRightVec = skyDiver.bodyRight.clone();
-  let bodyUpVec = skyDiver.bodyUp.clone();
-  
-  if (skyDiver.parachuteOpend) {
-    bodyUpVec = new THREE.Vector3(0, 1, 0); 
-    bodyFrontVec = skyDiver.bodyFront.clone(); 
-    bodyRightVec = skyDiver.bodyRight.clone();
-  } else {
-    bodyFrontVec = skyDiver.bodyFront.clone();
-    bodyRightVec = skyDiver.bodyRight.clone();
-    bodyUpVec = skyDiver.bodyUp.clone();
-  }
-  
-  drawVector(skyDiver.bodyFront, skyDiver.position, "bodyFront", "red");
-  drawVector(skyDiver.bodyRight, skyDiver.position, "bodyRight", "green");
-  drawVector(skyDiver.bodyUp, skyDiver.position, "bodyUp", "blue");
   skyDiver.syncModelRotation();
   skydiverModel.position.copy(skyDiver.position)
   skydiverModel.quaternion.copy(skyDiver.model.quaternion)
+
+  drawVector(skyDiver.bodyFront, skyDiver.position, "bodyFront", "red");
+  drawVector(skyDiver.bodyRight, skyDiver.position, "bodyRight", "green");
+  drawVector(skyDiver.bodyUp, skyDiver.position, "bodyUp", "blue");
   
   // Camera Update
   const skydiverPos = skydiverModel.position.clone();

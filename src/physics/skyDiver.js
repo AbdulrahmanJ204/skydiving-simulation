@@ -32,6 +32,7 @@ export class SkyDiver {
     if (this.parachuteOpend) return;
     this.orientation = new Quaternion();
     this.parachuteOpend = true;
+    this.updateAxesFromOrientation();
     this.area += this.parachuteArea;
   }
   update(delta) {
@@ -64,7 +65,7 @@ export class SkyDiver {
       }
     }
   }
-  rotateParachuteLeft(deltaTime) {
+  rotateParachuteR(deltaTime) {
     if (!this.parachuteOpend) return;
     const deltaAngle = this.rotationSpeed * deltaTime;
     this.parachuteRotationAngle = Math.max(
@@ -73,7 +74,7 @@ export class SkyDiver {
     );
   }
 
-  rotateParachuteRight(deltaTime) {
+  rotateParachuteL(deltaTime) {
     if (!this.parachuteOpend) return;
     const deltaAngle = this.rotationSpeed * deltaTime;
     this.parachuteRotationAngle = Math.min(
@@ -103,23 +104,23 @@ export class SkyDiver {
     this.bodyUp = baseUp.clone().applyQuaternion(this.orientation).normalize();
   }
   syncModelRotation() {
-    if (!this.model) return;
+    // if (!this.model) return;
 
     // Construct a rotation matrix from bodyRight, bodyUp, bodyFront
     const m = new Matrix4();
 
     // Column-major order: X (right), Y (up), Z (forward)
-    if (this.parachuteOpend)
-      m.makeBasis(this.bodyRight, this.bodyUp, this.bodyFront);
-    else {
-      m.makeBasis(this.bodyRight, this.bodyFront, this.bodyUp);
-    }
-
-    // Apply this matrix as a quaternion
-    this.model.quaternion.setFromRotationMatrix(m);
     const flip = new Quaternion();
-    flip.setFromAxisAngle(new Vector3(0, 1, 0), Math.PI); // flip around X
-    if(!this.parachuteOpend)
+    if (this.parachuteOpend) {
+      m.makeBasis(this.bodyRight, this.bodyUp, this.bodyFront);
+      flip.setFromAxisAngle(new Vector3(0, 1, 0), Math.PI); // flip around X
+      this.model.quaternion.copy(this.orientation);
+    } else {
+      m.makeBasis(this.bodyRight, this.bodyFront, this.bodyUp);
+      // Apply this matrix as a quaternion
+      flip.setFromAxisAngle(new Vector3(0, 1, 0), Math.PI); // flip around X
+      this.model.quaternion.setFromRotationMatrix(m);
+    }
     this.model.quaternion.multiply(flip); // apply flip
   }
   addGuiFolder(gui) {
