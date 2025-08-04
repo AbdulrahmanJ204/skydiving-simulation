@@ -270,8 +270,11 @@ const renderLoop = () => {
   skydiverModel.position.copy(skyDiver.position);
   skydiverModel.quaternion.copy(skyDiver.model.quaternion);
   if (skyDiver.parachuteOpend) {
-    parachuteModel.position.copy(skyDiver.position);
-    parachuteModel.quaternion.copy(skyDiver.model.quaternion);
+    const parachuteOffsetUp = skyDiver.bodyUp.clone().multiplyScalar(3.5);  //UP     
+    const parachuteOffsetBack = skyDiver.bodyFront.clone().multiplyScalar(-0.5); //Back 
+    const totalParachuteOffset = parachuteOffsetUp.add(parachuteOffsetBack);
+    
+    parachuteModel.position.copy(skyDiver.position.clone().add(totalParachuteOffset));    parachuteModel.quaternion.copy(skyDiver.model.quaternion);
     console.log(parachuteModel);
   }
   drawVector(skyDiver.bodyFront, skyDiver.position, "bodyFront", "red");
