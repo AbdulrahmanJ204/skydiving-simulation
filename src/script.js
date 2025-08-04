@@ -34,7 +34,7 @@ const skyboxTexture = loaderCube.load([
   "./skybox/negz.jpg",
 ]);
 scene.background = skyboxTexture;
- 
+
 // Model
 const gltfLoader = new GLTFLoader();
 let skydiverModel, parachuteModel;
@@ -62,10 +62,30 @@ const sizes = {
 
 // Camera
 const cameras = {
-  thirdPerson: new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 10000),
-  firstPerson: new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 10000),
-  overhead: new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 10000),
-  overview: new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 10000),
+  thirdPerson: new THREE.PerspectiveCamera(
+    75,
+    sizes.width / sizes.height,
+    0.1,
+    10000
+  ),
+  firstPerson: new THREE.PerspectiveCamera(
+    75,
+    sizes.width / sizes.height,
+    0.1,
+    10000
+  ),
+  overhead: new THREE.PerspectiveCamera(
+    75,
+    sizes.width / sizes.height,
+    0.1,
+    10000
+  ),
+  overview: new THREE.PerspectiveCamera(
+    75,
+    sizes.width / sizes.height,
+    0.1,
+    10000
+  ),
 };
 
 let activeCamera = cameras.thirdPerson;
@@ -137,8 +157,8 @@ window.addEventListener("keydown", (event) => {
 window.addEventListener("resize", () => {
   sizes.width = window.innerWidth;
   sizes.height = window.innerHeight;
-  activeCamera .aspect = sizes.width / sizes.height;
-  activeCamera .updateProjectionMatrix();
+  activeCamera.aspect = sizes.width / sizes.height;
+  activeCamera.updateProjectionMatrix();
   renderer.setSize(sizes.width, sizes.height);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 });
@@ -152,13 +172,12 @@ window.addEventListener("resize", () => {
 // ground.receiveShadow = true;
 // scene.add(ground);
 
-
-
 // Our Simulation Classes
 let skyDiver = new SkyDiver();
 let physics = new Physics();
 skyDiver.addGuiFolder(gui);
 physics.addGuiFolder(gui);
+
 const rotationSpeed = 0.1;
 function updateOrientation(deltaTime) {
   let rotationSpeedDt = rotationSpeed * deltaTime;
@@ -188,11 +207,11 @@ let arrowHelpers = new Map();
 function drawVector(v, pos, vName, hex) {
   const dir = v.clone().normalize();
   const origin = pos.clone().add(new THREE.Vector3(0, 1.5, 0));
-  const length = 4; 
+  const length = 4;
 
   if (arrowHelpers.has(vName)) scene.remove(arrowHelpers.get(vName));
 
-  const arrow = new THREE.ArrowHelper(dir, origin, length, hex, 1, 0.5); 
+  const arrow = new THREE.ArrowHelper(dir, origin, length, hex, 1, 0.5);
   arrowHelpers.set(vName, arrow);
   scene.add(arrow);
 }
@@ -227,7 +246,7 @@ scene.add(sunLight);
 
 // const cameraTargetOffset = new THREE.Vector3(0, 3, 3); // behind & above
 // const smoothedCameraPos = new THREE.Vector3();
-
+let firstLoad = true;
 const renderLoop = () => {
   const currentTime = clock.getElapsedTime();
   const dt = currentTime - lastTime;
@@ -236,17 +255,21 @@ const renderLoop = () => {
   if (!skydiverModel) {
     requestAnimationFrame(renderLoop);
     return;
+  } else if (firstLoad) {
+    gui.add(skydiverModel, "visible");
+    gui.add(parachuteModel, "visible");
+    firstLoad = false;
   }
-  
+
   // Applying Physics
   updateOrientation(dt);
   physics.applyForces(skyDiver);
   skyDiver.update(dt);
   physics.drawVectors(scene, skyDiver.position);
   skyDiver.syncModelRotation();
-  skydiverModel.position.copy(skyDiver.position)
-  skydiverModel.quaternion.copy(skyDiver.model.quaternion)
-  if(skyDiver.parachuteOpend){
+  skydiverModel.position.copy(skyDiver.position);
+  skydiverModel.quaternion.copy(skyDiver.model.quaternion);
+  if (skyDiver.parachuteOpend) {
     parachuteModel.position.copy(skyDiver.position);
     parachuteModel.quaternion.copy(skyDiver.model.quaternion);
     console.log(parachuteModel);
@@ -254,38 +277,39 @@ const renderLoop = () => {
   drawVector(skyDiver.bodyFront, skyDiver.position, "bodyFront", "red");
   drawVector(skyDiver.bodyRight, skyDiver.position, "bodyRight", "green");
   drawVector(skyDiver.bodyUp, skyDiver.position, "bodyUp", "blue");
-  
+
   // Camera Update
   const skydiverPos = skydiverModel.position.clone();
 
-// === THIRD PERSON CAMERA ===
-const backOffset = skyDiver.bodyFront.clone().multiplyScalar(-10);
-const upOffset = skyDiver.bodyUp.clone().multiplyScalar(4);
-const thirdPersonPos = skydiverPos.clone().add(backOffset).add(upOffset);
-cameras.thirdPerson.position.lerp(thirdPersonPos, 0.05);
-cameras.thirdPerson.lookAt(skydiverPos);
+  // === THIRD PERSON CAMERA ===
+  const backOffset = skyDiver.bodyFront.clone().multiplyScalar(-10);
+  const upOffset = skyDiver.bodyUp.clone().multiplyScalar(4);
+  const thirdPersonPos = skydiverPos.clone().add(backOffset).add(upOffset);
+  cameras.thirdPerson.position.lerp(thirdPersonPos, 0.05);
+  cameras.thirdPerson.lookAt(skydiverPos);
 
-// === FIRST PERSON CAMERA ===
-const headOffset = skyDiver.bodyUp.clone().multiplyScalar(1.2);
-const frontOffset = skyDiver.bodyFront.clone().multiplyScalar(0.3);
-const firstPersonPos = skydiverPos.clone().add(headOffset).add(frontOffset);
-cameras.firstPerson.position.copy(firstPersonPos);
-cameras.firstPerson.lookAt(firstPersonPos.clone().add(skyDiver.bodyFront));
+  // === FIRST PERSON CAMERA ===
+  const headOffset = skyDiver.bodyUp.clone().multiplyScalar(1.2);
+  const frontOffset = skyDiver.bodyFront.clone().multiplyScalar(0.3);
+  const firstPersonPos = skydiverPos.clone().add(headOffset).add(frontOffset);
+  cameras.firstPerson.position.copy(firstPersonPos);
+  cameras.firstPerson.lookAt(firstPersonPos.clone().add(skyDiver.bodyFront));
 
-// === OVERHEAD CAMERA ===
-const overheadPos = skydiverPos.clone().add(skyDiver.bodyUp.clone().multiplyScalar(20));
-cameras.overhead.position.lerp(overheadPos, 0.05);
-cameras.overhead.lookAt(skydiverPos);
+  // === OVERHEAD CAMERA ===
+  const overheadPos = skydiverPos
+    .clone()
+    .add(skyDiver.bodyUp.clone().multiplyScalar(20));
+  cameras.overhead.position.lerp(overheadPos, 0.05);
+  cameras.overhead.lookAt(skydiverPos);
 
-// === OVERVIEW CAMERA === (ثابتة بعيدة)
-const overviewOffset = new THREE.Vector3(0, 15, 25); 
-const overviewPos = skydiverPos.clone().add(overviewOffset);
-cameras.overview.position.lerp(overviewPos, 0.05); 
-cameras.overview.lookAt(skydiverPos);
+  // === OVERVIEW CAMERA === (ثابتة بعيدة)
+  const overviewOffset = new THREE.Vector3(0, 15, 25);
+  const overviewPos = skydiverPos.clone().add(overviewOffset);
+  cameras.overview.position.lerp(overviewPos, 0.05);
+  cameras.overview.lookAt(skydiverPos);
 
-renderer.render(scene, activeCamera);
+  renderer.render(scene, activeCamera);
   window.requestAnimationFrame(renderLoop);
 };
-
 
 renderLoop();

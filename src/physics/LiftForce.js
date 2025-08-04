@@ -7,7 +7,7 @@ export class LiftForce extends Force {
     this.liftDirection = new Vector3(0, 0, 0);
   }
   autoLiftCoefficient(angleRad) {
-    return Math.abs(Math.sin(2 * angleRad)) * 0.05;
+    return Math.abs(Math.sin(2 * angleRad)) * 0.2;
   }
   projectOntoPlane(vector, normal) {
     const n = normal.clone().normalize();

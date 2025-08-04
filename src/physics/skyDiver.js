@@ -57,7 +57,6 @@ export class SkyDiver {
       const q = new Quaternion().setFromAxisAngle(turnAxis, turnAngleRad);
       this.orientation.premultiply(q);
       this.updateAxesFromOrientation();
-
       // Slowly return to center
       const damping = 0.98;
       this.parachuteRotationAngle *= damping;
