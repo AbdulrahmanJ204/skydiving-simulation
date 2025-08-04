@@ -32,6 +32,7 @@ export class SkyDiver {
     if (this.parachuteOpend) return;
     this.orientation = new Quaternion();
     this.parachuteOpend = true;
+    this.parachute.visible = true;
     this.updateAxesFromOrientation();
     this.area += this.parachuteArea;
   }
@@ -115,6 +116,7 @@ export class SkyDiver {
       m.makeBasis(this.bodyRight, this.bodyUp, this.bodyFront);
       flip.setFromAxisAngle(new Vector3(0, 1, 0), Math.PI); // flip around X
       this.model.quaternion.copy(this.orientation);
+      this.parachute.quaternion.copy(this.orientation); // apply flip
     } else {
       m.makeBasis(this.bodyRight, this.bodyFront, this.bodyUp);
       // Apply this matrix as a quaternion

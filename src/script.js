@@ -152,16 +152,7 @@ window.addEventListener("resize", () => {
 // ground.receiveShadow = true;
 // scene.add(ground);
 
-const cloudTexture = new THREE.TextureLoader().load('./textures/cloud.png');
-const cloudMaterial = new THREE.MeshBasicMaterial({
-  map: cloudTexture,
-  transparent: true,
-  opacity: 0.5,
-  depthWrite: false,
-});
-const cloud = new THREE.Mesh(new THREE.PlaneGeometry(100, 50), cloudMaterial);
-cloud.position.set(0, 300, -100);
-scene.add(cloud);
+
 
 // Our Simulation Classes
 let skyDiver = new SkyDiver();
@@ -246,9 +237,7 @@ const renderLoop = () => {
     requestAnimationFrame(renderLoop);
     return;
   }
-  cloud.position.x -= 0.05;
-  if (cloud.position.x < -200) cloud.position.x = 200;
-
+  
   // Applying Physics
   updateOrientation(dt);
   physics.applyForces(skyDiver);
@@ -257,7 +246,11 @@ const renderLoop = () => {
   skyDiver.syncModelRotation();
   skydiverModel.position.copy(skyDiver.position)
   skydiverModel.quaternion.copy(skyDiver.model.quaternion)
-
+  if(skyDiver.parachuteOpend){
+    parachuteModel.position.copy(skyDiver.position);
+    parachuteModel.quaternion.copy(skyDiver.model.quaternion);
+    console.log(parachuteModel);
+  }
   drawVector(skyDiver.bodyFront, skyDiver.position, "bodyFront", "red");
   drawVector(skyDiver.bodyRight, skyDiver.position, "bodyRight", "green");
   drawVector(skyDiver.bodyUp, skyDiver.position, "bodyUp", "blue");
@@ -266,8 +259,8 @@ const renderLoop = () => {
   const skydiverPos = skydiverModel.position.clone();
 
 // === THIRD PERSON CAMERA ===
-const backOffset = skyDiver.bodyFront.clone().multiplyScalar(-5);
-const upOffset = skyDiver.bodyUp.clone().multiplyScalar(2);
+const backOffset = skyDiver.bodyFront.clone().multiplyScalar(-10);
+const upOffset = skyDiver.bodyUp.clone().multiplyScalar(4);
 const thirdPersonPos = skydiverPos.clone().add(backOffset).add(upOffset);
 cameras.thirdPerson.position.lerp(thirdPersonPos, 0.05);
 cameras.thirdPerson.lookAt(skydiverPos);
