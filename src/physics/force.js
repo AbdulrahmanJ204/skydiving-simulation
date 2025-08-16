@@ -9,13 +9,12 @@ export class Force {
     this.showArrowHelper = false;
     this.color = new Color(color);
   }
-  calculateForce({ skydiver, controllableVariables }) {}
-  addGuiFolder(gui) {
-    this.folder = gui.addFolder(this.name);
-    this.folder.add(this, "showArrowHelper").listen();
-    this.folder.addColor(this, "color").listen();
-    this.folder.add(this.force, "x").listen().disable();
-    this.folder.add(this.force, "y").listen().disable();
-    this.folder.add(this.force, "z").listen().disable();
+  calculateForce({ skydiver, controllableVariables }) { }
+
+  addSettingsFolder(parentFolder) {
+    const folder = parentFolder.addFolder(this.name);
+    folder.add(this, "showArrowHelper").name("Show Arrow").listen();
+    folder.addColor(this, "color").name("Color").listen();
+    return folder;
   }
 }

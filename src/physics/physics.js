@@ -4,7 +4,7 @@ import { LiftForce } from "./LiftForce";
 import { CoriolisForce } from "./coriolisForce";
 import { Vector3, ArrowHelper, Color } from "three";
 import { Force } from "./force";
-import GUI from "lil-gui";
+
 export class Physics {
   forces = new Map();
 
@@ -12,10 +12,12 @@ export class Physics {
   static controllableVariables = {
     gravity: 9.81,
     airDensity: 1.225,
-    dragCoefficient: 0.005,
-    liftCoefficient: 0.005,
-    liftCoefficientX: 0,
-    liftCoefficientZ: 0,
+    dragCoefficientForParachute: 0.005,
+    dragCoefficientBeforeParachute: 0.005,
+    liftCoefficientForParachute: 0.005,
+    liftCoefficientBeforeParachute: 0.3,
+    AutoliftCoefficientX: 0,
+    AutoliftCoefficientZ: 0,
     wind: new Vector3(0, 0, 0),
     OMEGA: 7.2921159e-5,
     latitude: 90, // 0 to 180 and 0 to -180
@@ -87,7 +89,7 @@ export class Physics {
   }
 
   addGuiFolder(gui) {
-    this.folder = gui.addFolder("Physics Variables");
+    this.folder = gui.addFolder("Physics Settings");
 
     this.folder
       .add(Physics.controllableVariables, "gravity")
@@ -95,22 +97,70 @@ export class Physics {
       .max(20)
       .step(0.1)
       .listen();
-    this.folder.add(Physics.controllableVariables, "airDensity").listen();
-    this.folder.add(Physics.controllableVariables, "dragCoefficient").listen();
-    this.folder.add(Physics.controllableVariables, "liftCoefficient").listen();
-    this.folder.add(Physics.controllableVariables, "liftCoefficientX").listen();
-    this.folder.add(Physics.controllableVariables, "liftCoefficientZ").listen();
+    this.folder.add(Physics.controllableVariables, "airDensity")
+      .min(0.1)
+      .max(5)
+      .step(0.01)
+      .listen();
+
+    this.folder.add(Physics.controllableVariables, "dragCoefficientBeforeParachute")
+      .min(0.001)
+      .max(0.2)
+      .step(0.001)
+      .listen();
+    this.folder.add(Physics.controllableVariables, "dragCoefficientForParachute")
+      .min(0.001)
+      .max(0.4)
+      .step(0.001)
+      .listen();
+    this.folder.add(Physics.controllableVariables, "liftCoefficientBeforeParachute")
+      .min(0.001)
+      .max(0.2)
+      .step(0.001)
+      .listen();
+
+    this.folder.add(Physics.controllableVariables, "liftCoefficientForParachute")
+      .min(0.001)
+      .max(0.4)
+      .step(0.001)
+      .listen();
+
     this.windFolder = this.folder.addFolder("Wind");
-    this.windFolder.add(Physics.controllableVariables.wind, "x").listen();
-    this.windFolder.add(Physics.controllableVariables.wind, "y").listen();
-    this.windFolder.add(Physics.controllableVariables.wind, "z").listen();
-    this.folder.add(Physics.controllableVariables, "OMEGA").listen();
-    this.folder.add(Physics.controllableVariables, "latitude").listen();
-    this.totalForce.addGuiFolder(gui);
+    this.windFolder.add(Physics.controllableVariables.wind, "x")
+      .min(-50)
+      .max(50)
+      .step(0.1)
+      .listen();
+    this.windFolder.add(Physics.controllableVariables.wind, "y")
+      .min(-50)
+      .max(50)
+      .step(0.1)
+      .listen();
+    this.windFolder.add(Physics.controllableVariables.wind, "z")
+      .min(-50)
+      .max(50)
+      .step(0.1)
+      .listen();
+
+    this.folder.add(Physics.controllableVariables, "OMEGA")
+      .min(0)
+      .max(0.0001)
+      .step(0.000001)
+      .listen();
+    this.folder.add(Physics.controllableVariables, "latitude")
+      .min(-90)
+      .max(90)
+      .step(1)
+      .listen();
+
+    // Forces settings (color and arrow visibility)
+    const forcesFolder = this.folder.addFolder("Forces");
+    this.totalForce.addSettingsFolder?.(forcesFolder);
     this.forces.forEach((force) => {
-      force.addGuiFolder(gui);
+      force.addSettingsFolder?.(forcesFolder);
     });
 
     return this.folder;
   }
+
 }
