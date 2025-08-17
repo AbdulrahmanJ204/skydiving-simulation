@@ -1,6 +1,6 @@
 import { Vector3 } from "three";
 import { Force } from "./force";
-
+// checked
 export class CoriolisForce extends Force {
   constructor({ name, color }) {
     super({ name: name, color: color });

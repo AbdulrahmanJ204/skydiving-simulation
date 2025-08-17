@@ -90,6 +90,8 @@ export class UIManager {
       Object.entries(forces).forEach(([name, force]) => {
         const magnitude = Math.sqrt(force.x * force.x + force.y * force.y + force.z * force.z);
         html += `${name}: ${magnitude.toFixed(2)}N<br>`;
+        html += `X: ${force.x.toFixed(2)} | Y: ${force.y.toFixed(2)} | Z: ${force.z.toFixed(2)}<br>`;
+        html+='<br>';
       });
       html += '</div>';
     }

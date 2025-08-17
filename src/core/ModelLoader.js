@@ -1,6 +1,6 @@
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import * as THREE from 'three';
-
+// Checked
 export class ModelLoader {
   constructor(scene) {
     this.scene = scene;
@@ -92,12 +92,11 @@ export class ModelLoader {
         this.loadPlaneModel(),
       ]);
 
-      // Create a combined skydiver group
       const skydiverGroup = this.createSkydiverGroup(skydiverModel, parachuteModel);
 
       return {
         skydiverGroup: skydiverGroup,
-        skydiver: skydiverModel, // Keep individual references for compatibility
+        skydiver: skydiverModel, 
         parachute: parachuteModel,
         terrain: terrainModel,
         plane: planeModel
@@ -109,25 +108,24 @@ export class ModelLoader {
   }
 
   createSkydiverGroup(skydiverModel, parachuteModel) {
-    // Create a group to hold both skydiver and parachute
+   
     const skydiverGroup = new THREE.Group();
     skydiverGroup.name = 'skydiverGroup';
     
-    // Remove individual models from scene
+   
     this.scene.remove(skydiverModel);
     this.scene.remove(parachuteModel);
     
-    // Add models to the group
+   
     skydiverGroup.add(skydiverModel);
     skydiverGroup.add(parachuteModel);
     
-    // Position parachute relative to skydiver within the group
-    parachuteModel.position.set(0, 7, 0); // 7 units above skydiver
-    
-    // Add the group to the scene
+   
+    parachuteModel.position.set(0, 7, 0);     
+   
     this.scene.add(skydiverGroup);
     
-    // Store references for easy access
+   
     skydiverGroup.skydiverModel = skydiverModel;
     skydiverGroup.parachuteModel = parachuteModel;
     

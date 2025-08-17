@@ -1,5 +1,6 @@
 import { Force } from "./force";
 import { Vector3, MathUtils } from "three";
+// checked
 export class LiftForce extends Force {
   constructor({ name, color }) {
     super({ name: name, color: color });

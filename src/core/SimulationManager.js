@@ -18,7 +18,7 @@ export class SimulationManager {
     this.rotationSpeed = 0.1;
     this.isSimulationRunning = false;
     this.raycaster = new THREE.Raycaster();
-    this._down = new THREE.Vector3(0, -1, 0);
+    this.down = new THREE.Vector3(0, -1, 0);
 
     this.simulationStats = {
       flightTime: 0,
@@ -75,12 +75,11 @@ export class SimulationManager {
   }
 
   setupWidgets() {
+    // وقت يضغط عالستارت بتبدأ المحاكاة
     this.startWidget.onStart((initialValues) => {
       this.initializeSimulationWithValues(initialValues);
-      this.startedSimulation = true;
     });
-
-    // Set up real-time position updates for the plane
+    // مشان تحديث موقع الطيارة
     this.startWidget.onPositionChange((position) => {
       this.updatePlanePosition(position);
     });
@@ -88,21 +87,21 @@ export class SimulationManager {
 
   async initializeSceneAndShowWidget() {
     try {
-      // Load models and initialize scene before showing start widget
+   
+      // عم اعمل لود للموديلز مشان اعرضهم قبل الشاشة تبع الانبوت، 
+      
       this.models = await this.modelLoader.loadAllModels();
 
-      // Apply default initial values to position skydiver in scene
-      const defaultValues = this.startWidget.initialValues;
+   
+       const defaultValues = this.startWidget.initialValues;
       this.applyInitialValues(defaultValues);
 
-      // Setup pre-simulation scene: show plane, hide skydiver
+      // هون عم اعرض الطيارة بالمكان الابتدائي واخفي السكايدايفر والباراشوت
       this.setupPreSimulationScene(defaultValues);
 
-      // Start render loop immediately (but simulation won't run until start is pressed)
-      this.startRenderLoop();
-
-      
       this.startWidget.show();
+      
+      this.startRenderLoop();
     } catch (error) {
       console.error("Failed to initialize scene:", error);
     }
@@ -284,9 +283,8 @@ export class SimulationManager {
       }
     };
 
-    if (this.models.skydiverGroup) {
-      this.models.skydiverGroup.parachuteModel.visible = false;
-    }
+
+    
     this.endWidget.show(this.finalValues, this.simulationStats);
   }
 
@@ -296,7 +294,7 @@ export class SimulationManager {
      this.models.skydiverGroup.position.copy(this.skyDiver.position);
     this.models.skydiverGroup.quaternion.copy(this.skyDiver.modelOrientation);
 
-    // Handle parachute visibility within the group
+   
     if (this.skyDiver.parachuteOpend) {
       this.models.skydiverGroup.parachuteModel.visible = true;
     } else {
@@ -338,7 +336,7 @@ export class SimulationManager {
           acceleration: this.skyDiver.acceleration,
           autoLiftCoeffX: this.physics.constructor.controllableVariables.AutoliftCoefficientX || 0,
           autoLiftCoeffZ: this.physics.constructor.controllableVariables.AutoliftCoefficientZ || 0,
-          autoDragCoeff: dragForce?.lastCd || 0,
+          autoDragCoeff: this.physics.constructor.controllableVariables.AutoDragCoefficient,
           parachuteOpen: this.skyDiver.parachuteOpend,
           forces: {
             Gravity: gravityForce?.force || new THREE.Vector3(),
@@ -358,12 +356,13 @@ export class SimulationManager {
     renderLoop();
   }
 
-  // ===== Terrain collision helpers =====
+  // تابع بيجيب اول نقطة تقاطع تحت 
+  // x,z 
   getGroundYAt(x, z) {
     const terrain = this.models?.terrain;
     if (!terrain) return null;
     const origin = new THREE.Vector3(x, 1e6, z);
-    this.raycaster.set(origin, this._down);
+    this.raycaster.set(origin, this.down);
     const hits = this.raycaster.intersectObject(terrain, true);
     if (hits && hits.length > 0) {
       return hits[0].point.y;
@@ -378,13 +377,14 @@ export class SimulationManager {
     const groundY = this.getGroundYAt(pos.x, pos.z);
     if (groundY === null) return;
     if (pos.y <= groundY) {
-      // Snap to terrain and stop motion
       pos.y = groundY;
       this.finalValues.velocity.x = this.skyDiver.velocity.x;
       this.finalValues.velocity.y = this.skyDiver.velocity.y;
       this.finalValues.velocity.z = this.skyDiver.velocity.z;
       this.skyDiver.velocity.set(0, 0, 0);
       this.skyDiver.acceleration.set(0, 0, 0);
+      this.models.skydiverGroup.parachuteModel.visible = false;
+      this.models.parachute.visible = false;
       this.endSimulation();
     }
   }

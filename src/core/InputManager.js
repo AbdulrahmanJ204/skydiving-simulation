@@ -1,3 +1,4 @@
+// Checked
 export class InputManager {
   constructor() {
     this.keys = {

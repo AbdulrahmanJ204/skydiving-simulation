@@ -1,5 +1,5 @@
 import { Force } from "./force";
-
+// checked
 export class GravityForce extends Force {
    constructor({name , color}) {
     super({name : name , color : color});

@@ -1,6 +1,8 @@
 import * as THREE from 'three';
 import { Sky } from 'three/addons/objects/Sky.js';
-
+// Checked
+// هون البيئة (شمس و سما ومي واضوية)وال  
+// scene & rendere Object
 export class SceneManager {
   constructor() {
     this.scene = new THREE.Scene();

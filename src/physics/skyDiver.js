@@ -3,12 +3,12 @@ import { Vector3, Quaternion, MathUtils, Matrix4 } from "three";
 export class SkyDiver {
   constructor() {
     this.parachuteOpend = false;
-    this.position = new Vector3(3, 5000, 0);
+    this.position = new Vector3(0, 0, 0);
     this.velocity = new Vector3(0, 0, 0);
     this.acceleration = new Vector3(0, 0, 0);
-    this.mass = 100;
-    this.parachuteArea = 10;
-    this.area = 1;
+    this.mass = 0;
+    this.parachuteArea = 0;
+    this.area = 0;
     this.bodyUp = new Vector3(0, 1, 0);
     this.bodyRight = new Vector3(1, 0, 0);
     this.bodyFront = new Vector3(0, 0, -1);
@@ -21,7 +21,7 @@ export class SkyDiver {
     this.parachuteRotationAngleFB = 0
     this.lastAppliedRotationFB = 0; 
     
-    this.maxParachuteAngle = 60;
+    this.maxParachuteAngle = 80;
     this.rotationSpeedFB = 10; 
     this.rotationSpeedLR = 1; 
   }

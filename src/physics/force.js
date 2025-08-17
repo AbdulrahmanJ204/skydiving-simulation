@@ -1,4 +1,5 @@
 import { Vector3, Color } from "three";
+// checked
 export class Force {
   constructor({ name, color }) {
     this.force = new Vector3(0, 0, 0);

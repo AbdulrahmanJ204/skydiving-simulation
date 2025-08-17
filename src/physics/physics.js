@@ -18,9 +18,10 @@ export class Physics {
     liftCoefficientBeforeParachute: 0.3,
     AutoliftCoefficientX: 0,
     AutoliftCoefficientZ: 0,
+    AutoDragCoefficient: 0,
     wind: new Vector3(0, 0, 0),
     OMEGA: 7.2921159e-5,
-    latitude: 90, // 0 to 180 and 0 to -180
+    latitude: 90, 
     AOA: 0,
   };
 
@@ -110,12 +111,12 @@ export class Physics {
       .listen();
     this.folder.add(Physics.controllableVariables, "dragCoefficientForParachute")
       .min(0.001)
-      .max(0.4)
+      .max(0.3)
       .step(0.001)
       .listen();
     this.folder.add(Physics.controllableVariables, "liftCoefficientBeforeParachute")
       .min(0.001)
-      .max(0.2)
+      .max(0.15)
       .step(0.001)
       .listen();
 
@@ -153,7 +154,6 @@ export class Physics {
       .step(1)
       .listen();
 
-    // Forces settings (color and arrow visibility)
     const forcesFolder = this.folder.addFolder("Forces");
     this.totalForce.addSettingsFolder?.(forcesFolder);
     this.forces.forEach((force) => {

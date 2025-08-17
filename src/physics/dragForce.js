@@ -1,28 +1,33 @@
 import { Vector3 } from "three";
 import { Force } from "./force";
-
+// checked
 export class DragForce extends Force {
   constructor({ name, color }) {
     super({ name: name, color: color });
     this.relativeAir = new Vector3(0, 0, 0);
-    this.lastCd = 0;
+
   }
-  autoDragCoefficient(angleRad, skyDiver, controllableVariables) {
-  
-    return Math.abs(Math.cos(angleRad)) *( skyDiver.parachuteOpend ?
-      controllableVariables.dragCoefficientForParachute :
-      controllableVariables.dragCoefficientBeforeParachute);
+  autoDragCoefficient(angleRad, controllableVariables) {
+    return Math.abs(Math.cos(angleRad)) * controllableVariables.dragCoefficientBeforeParachute;
   }
   calculateForce({ skydiver, controllableVariables }) {
     //   Fd = - 1/2 * p * Cd * A * |v|^2 * vVector
+
+    this.relativeAir.copy(skydiver.velocity).add(controllableVariables.wind);
     const angle = this.relativeAir.angleToFixed(skydiver.bodyUp);
-    const cd = this.autoDragCoefficient(angle , skydiver , controllableVariables)
-    this.lastCd = cd;
-    this.relativeVelocity = skydiver.velocity
-      .clone()
-      .add(controllableVariables.wind);
+    const cd =
+      skydiver.parachuteOpend ?
+        controllableVariables.dragCoefficientForParachute :
+        this.autoDragCoefficient(angle, controllableVariables)
+    controllableVariables.AutoDragCoefficient = cd;
+
+    const vRelLenSq = this.relativeAir.lengthSq();
+    if (vRelLenSq === 0 || !Number.isFinite(vRelLenSq)) {
+      this.force.set(0, 0, 0);
+      return this.force;
+    }
     this.force.copy(
-      this.relativeVelocity
+      this.relativeAir
         .clone()
         .negate()
         .multiplyScalar(
@@ -30,8 +35,7 @@ export class DragForce extends Force {
           controllableVariables.airDensity *
           cd *
           skydiver.area *
-          this.relativeVelocity.length() *
-          this.relativeVelocity.length()
+          vRelLenSq
         )
     );
 

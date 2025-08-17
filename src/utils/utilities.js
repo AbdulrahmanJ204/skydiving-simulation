@@ -1,18 +1,26 @@
 import * as THREE from 'three';
-
+// checked
 
 export const round = (num, precision = 2) => {
-  return num.toFixed(precision);
+  // برضو مشان مشكلة ال NAN
+  if (!Number.isFinite(num)) return num; 
+    return Number(num.toFixed(precision));
 };
 
 // تابع custom مشان حساب الزاويا بال FL , FD
 THREE.Vector3.prototype.angleToFixed = function (v) {
+  
+  // مشان مشكلة ال NAN 
+  if (this.lengthSq() === 0 || !v || v.lengthSq?.() === 0) {
+    return 0;
+  }
   const angle = this.angleTo(v);
   return round(angle);
 };
 
 let arrowHelpers = new Map();
-
+// لل debug
+// مشان ارسم الفيكتورات تبع السكايدايفووور
 export function drawVector(scene, v, pos, vName, hex) {
   const dir = v.clone().normalize();
   const origin = pos.clone().add(new THREE.Vector3(0, 1.5, 0));
