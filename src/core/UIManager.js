@@ -3,7 +3,7 @@ import GUI from "lil-gui";
 export class UIManager {
   constructor() {
     this.gui = new GUI({
-      closeFolders: true,
+      // closeFolders: true,
       title: "Simulation Controls",
       width: 300,
     });

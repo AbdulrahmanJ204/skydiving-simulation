@@ -207,7 +207,10 @@ export class EndWidget {
           ` : ''}
         </div>
         
-        <!-- Forces & Physics -->
+        
+        
+      </div>
+      <!-- Forces & Physics -->
         <div class="stat-section">
           <h3 style="color: #81C784; margin-top: 0;">Final Forces</h3>
           <div class="stat-item">
@@ -231,9 +234,6 @@ export class EndWidget {
             <span class="stat-value">${this.finalValues.forces?.total?.toFixed(2) || '0.00'} N</span>
           </div>
         </div>
-        
-      </div>
-      
       <div style="text-align: center; margin-top: 30px;">
       <button id="close-results" class="close-btn">Close</button>
       </div>

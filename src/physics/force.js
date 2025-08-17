@@ -14,6 +14,7 @@ export class Force {
 
   addSettingsFolder(parentFolder) {
     const folder = parentFolder.addFolder(this.name);
+    folder.close()
     folder.add(this, "showArrowHelper").name("Show Arrow").listen();
     folder.addColor(this, "color").name("Color").listen();
     return folder;
