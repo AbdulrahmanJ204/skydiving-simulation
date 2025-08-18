@@ -149,8 +149,8 @@ export class Physics {
       .step(0.000001)
       .listen();
     this.folder.add(Physics.controllableVariables, "latitude")
-      .min(-90)
-      .max(90)
+      .min(-180)
+      .max(180)
       .step(1)
       .listen();
 

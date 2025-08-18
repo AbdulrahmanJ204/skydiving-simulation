@@ -87,20 +87,20 @@ export class SimulationManager {
 
   async initializeSceneAndShowWidget() {
     try {
-   
+
       // عم اعمل لود للموديلز مشان اعرضهم قبل الشاشة تبع الانبوت، 
-      
+
       this.models = await this.modelLoader.loadAllModels();
 
-   
-       const defaultValues = this.startWidget.initialValues;
+
+      const defaultValues = this.startWidget.initialValues;
       this.applyInitialValues(defaultValues);
 
       // هون عم اعرض الطيارة بالمكان الابتدائي واخفي السكايدايفر والباراشوت
       this.setupPreSimulationScene(defaultValues);
 
       this.startWidget.show();
-      
+
       this.startRenderLoop();
     } catch (error) {
       console.error("Failed to initialize scene:", error);
@@ -109,19 +109,19 @@ export class SimulationManager {
 
   async initializeSimulationWithValues(initialValues) {
     try {
-      
+
       this.applyInitialValues(initialValues);
 
-      
+
       this.uiManager.addSkyDiverFolder(this.skyDiver);
       this.uiManager.addPhysicsFolder(this.physics);
 
-      
-      
-      
+
+
+
       this.startSimulationScene();
 
-      
+
       this.initializeSimulationTracking(initialValues);
     } catch (error) {
       console.error("Failed to initialize simulation:", error);
@@ -157,13 +157,13 @@ export class SimulationManager {
   }
 
   setupPreSimulationScene(defaultValues) {
-    
+
     if (this.models.plane) {
       this.models.plane.position.copy(defaultValues.startPosition);
       this.models.plane.visible = true;
       this.cameraManager.focusOnPlane(this.models.plane.position);
     }
-    
+
     if (this.models.skydiverGroup) {
       this.models.skydiverGroup.visible = false;
     }
@@ -173,7 +173,7 @@ export class SimulationManager {
     if (this.models.plane) {
       this.models.plane.visible = false;
     }
-    
+
     if (this.models.skydiverGroup) {
       this.models.skydiverGroup.visible = true;
       this.models.skydiverGroup.parachuteModel.visible = false;
@@ -233,32 +233,9 @@ export class SimulationManager {
     }
   }
 
-  updateSimulationStats(deltaTime) {
-    if (!this.isSimulationRunning) return;
 
 
-
-
-    const currentSpeed = this.skyDiver.velocity.length();
-    if (currentSpeed > this.simulationStats.maxSpeed) {
-      this.simulationStats.maxSpeed = currentSpeed;
-    }
-
-
-    const distanceMoved = this.skyDiver.position.distanceTo(this.previousPosition);
-    this.simulationStats.totalDistance += distanceMoved;
-    this.previousPosition.copy(this.skyDiver.position);
-
-
-    if (this.autoParachuteHeight && !this.skyDiver.parachuteOpend &&
-      this.skyDiver.position.y <= this.autoParachuteHeight) {
-      this.skyDiver.openParachute();
-      this.simulationStats.parachuteOpenTime = this.simulationStats.flightTime;
-      this.simulationStats.parachuteOpenHeight = this.skyDiver.position.y;
-    }
-  }
-
-  endSimulation() {
+   endSimulation() {
     this.isSimulationRunning = false;
 
     // If terrain exists, snap final Y to terrain height for display
@@ -284,17 +261,16 @@ export class SimulationManager {
     };
 
 
-    
-    this.endWidget.show(this.finalValues, this.simulationStats);
+     this.endWidget.show(this.finalValues, this.simulationStats);
   }
 
   updateModels() {
     if (!this.models.skydiverGroup) return;
 
-     this.models.skydiverGroup.position.copy(this.skyDiver.position);
+    this.models.skydiverGroup.position.copy(this.skyDiver.position);
     this.models.skydiverGroup.quaternion.copy(this.skyDiver.modelOrientation);
 
-   
+    // Handle parachute visibility within the group
     if (this.skyDiver.parachuteOpend) {
       this.models.skydiverGroup.parachuteModel.visible = true;
     } else {
@@ -319,33 +295,13 @@ export class SimulationManager {
         this.updateOrientation(deltaTime);
         this.physics.applyForces(this.skyDiver);
         this.skyDiver.update(deltaTime);
-        // Handle terrain collision/landing
+
         this.handleTerrainCollision();
-        this.updateSimulationStats(deltaTime);
         this.physics.drawVectors(this.sceneManager.getScene(), this.skyDiver.position);
         this.skyDiver.syncModelRotation();
         this.updateModels();
-        // Update data overlay
-        const dragForce = this.physics.forces.get('Drag Force');
-        const gravityForce = this.physics.forces.get('Gravity Force');
-        const liftForce = this.physics.forces.get('Lift Force');
-        const coriolisForce = this.physics.forces.get('Coriolis Force');
-        this.uiManager.updateSimulationData({
-          position: this.skyDiver.position,
-          velocity: this.skyDiver.velocity,
-          acceleration: this.skyDiver.acceleration,
-          autoLiftCoeffX: this.physics.constructor.controllableVariables.AutoliftCoefficientX || 0,
-          autoLiftCoeffZ: this.physics.constructor.controllableVariables.AutoliftCoefficientZ || 0,
-          autoDragCoeff: this.physics.constructor.controllableVariables.AutoDragCoefficient,
-          parachuteOpen: this.skyDiver.parachuteOpend,
-          forces: {
-            Gravity: gravityForce?.force || new THREE.Vector3(),
-            Drag: dragForce?.force || new THREE.Vector3(),
-            Lift: liftForce?.force || new THREE.Vector3(),
-            Coriolis: coriolisForce?.force || new THREE.Vector3(),
-            Total: this.physics.totalForce.force || new THREE.Vector3(),
-          }
-        });
+        this.updateStats();
+
         this.cameraManager.updateCameraFollow(this.models.skydiverGroup.position, deltaTime);
       }
 
@@ -354,6 +310,47 @@ export class SimulationManager {
     };
 
     renderLoop();
+  }
+
+  updateStats() {
+    const dragForce = this.physics.forces.get('Drag Force');
+    const gravityForce = this.physics.forces.get('Gravity Force');
+    const liftForce = this.physics.forces.get('Lift Force');
+    const coriolisForce = this.physics.forces.get('Coriolis Force');
+    this.uiManager.updateSimulationData({
+      position: this.skyDiver.position,
+      velocity: this.skyDiver.velocity,
+      acceleration: this.skyDiver.acceleration,
+      autoLiftCoeffX: this.physics.constructor.controllableVariables.AutoliftCoefficientX || 0,
+      autoLiftCoeffZ: this.physics.constructor.controllableVariables.AutoliftCoefficientZ || 0,
+      autoDragCoeff: this.physics.constructor.controllableVariables.AutoDragCoefficient,
+      parachuteOpen: this.skyDiver.parachuteOpend,
+      forces: {
+        Gravity: gravityForce?.force || new THREE.Vector3(),
+        Drag: dragForce?.force || new THREE.Vector3(),
+        Lift: liftForce?.force || new THREE.Vector3(),
+        Coriolis: coriolisForce?.force || new THREE.Vector3(),
+        Total: this.physics.totalForce.force || new THREE.Vector3(),
+      }
+    });
+    
+    const currentSpeed = this.skyDiver.velocity.length();
+    if (currentSpeed > this.simulationStats.maxSpeed) {
+      this.simulationStats.maxSpeed = currentSpeed;
+    }
+
+
+    const distanceMoved = this.skyDiver.position.distanceTo(this.previousPosition);
+    this.simulationStats.totalDistance += distanceMoved;
+    this.previousPosition.copy(this.skyDiver.position);
+
+
+    if (this.autoParachuteHeight && !this.skyDiver.parachuteOpend &&
+      this.skyDiver.position.y <= this.autoParachuteHeight) {
+      this.skyDiver.openParachute();
+      this.simulationStats.parachuteOpenTime = this.simulationStats.flightTime;
+      this.simulationStats.parachuteOpenHeight = this.skyDiver.position.y;
+    }
   }
 
   // تابع بيجيب اول نقطة تقاطع تحت 
