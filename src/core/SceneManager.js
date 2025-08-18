@@ -91,8 +91,8 @@ export class SceneManager {
     this.renderer.render(this.scene, camera);
   }
 
-  onWindowResize(width, height) {
-    this.renderer.setSize(width, height);
+  onWindowResize() {
+    this.renderer.setSize(window.innerWidth, window.innerHeight);
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   }
 }

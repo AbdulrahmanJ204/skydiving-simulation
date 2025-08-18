@@ -52,12 +52,17 @@ export class SimulationManager {
     this.startWidget = new StartWidget();
     this.endWidget = new EndWidget();
 
-    this.setupInputCallbacks();
+    this.setupCallbacks();
     this.setupWidgets();
     this.initializeSceneAndShowWidget();
   }
 
-  setupInputCallbacks() {
+  setupCallbacks() {
+    window.addEventListener("resize", () => {
+      this.cameraManager.onWindowResize()
+      this.sceneManager.onWindowResize()
+    });
+
     this.inputManager.registerCallback("toggleGUI", () => {
       this.uiManager.toggle();
     });
@@ -235,10 +240,10 @@ export class SimulationManager {
 
 
 
-   endSimulation() {
+  endSimulation() {
     this.isSimulationRunning = false;
 
-    // If terrain exists, snap final Y to terrain height for display
+
     const gy = this.getGroundYAt(this.skyDiver.position.x, this.skyDiver.position.z);
     const finalY = gy !== null ? Math.max(gy, this.skyDiver.position.y) : this.skyDiver.position.y;
 
@@ -261,7 +266,7 @@ export class SimulationManager {
     };
 
 
-     this.endWidget.show(this.finalValues, this.simulationStats);
+    this.endWidget.show(this.finalValues, this.simulationStats);
   }
 
   updateModels() {
@@ -270,7 +275,7 @@ export class SimulationManager {
     this.models.skydiverGroup.position.copy(this.skyDiver.position);
     this.models.skydiverGroup.quaternion.copy(this.skyDiver.modelOrientation);
 
-    // Handle parachute visibility within the group
+
     if (this.skyDiver.parachuteOpend) {
       this.models.skydiverGroup.parachuteModel.visible = true;
     } else {
@@ -333,7 +338,7 @@ export class SimulationManager {
         Total: this.physics.totalForce.force || new THREE.Vector3(),
       }
     });
-    
+
     const currentSpeed = this.skyDiver.velocity.length();
     if (currentSpeed > this.simulationStats.maxSpeed) {
       this.simulationStats.maxSpeed = currentSpeed;
