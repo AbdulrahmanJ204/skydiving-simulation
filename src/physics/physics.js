@@ -111,7 +111,7 @@ export class Physics {
       .listen();
     this.folder.add(Physics.controllableVariables, "dragCoefficientForParachute")
       .min(0.001)
-      .max(0.3)
+      .max(0.4)
       .step(0.001)
       .listen();
     this.folder.add(Physics.controllableVariables, "liftCoefficientBeforeParachute")

@@ -150,7 +150,7 @@ export class SkyDiver {
     this.folder = gui.addFolder("Skydiver Settings");
 
     this.folder.add(this, "mass").min(50).max(200).step(1).listen();
-    this.folder.add(this, "area").min(0.5).max(3).step(0.1).listen();
+    this.folder.add(this, "area").min(0.5).max(50).step(0.1).listen();
     this.folder.add(this, "parachuteArea").min(5).max(50).step(1).listen();
 
     return this.folder;

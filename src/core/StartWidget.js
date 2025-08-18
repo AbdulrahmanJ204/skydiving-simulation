@@ -60,7 +60,7 @@ export class StartWidget {
     <div>
 
       <label>X Position:</label>
-      <input type="number" id="startX" value="${this.initialValues.startPosition.x}" step="1">
+      <input type="number" id="startX" value="${this.initialValues.startPosition.x}" step="50">
     </div>
     <div>
 
@@ -69,7 +69,7 @@ export class StartWidget {
     </div>
     <div>
       <label>Z Position:</label>
-      <input type="number" id="startZ" value="${this.initialValues.startPosition.z}" step="1">
+      <input type="number" id="startZ" value="${this.initialValues.startPosition.z}" step="50">
     </div>
 
   </div>
@@ -105,7 +105,7 @@ export class StartWidget {
   <div>
 
     <label>Air Density (kg/m³):</label>
-    <input type="number" id="airDensity" value="${this.initialValues.airDensity}" min="0.1" max="3" step="0.01">
+    <input type="number" id="airDensity" value="${this.initialValues.airDensity}" min="0.1" max="5" step="0.01">
   </div>
 
   <div>
@@ -120,7 +120,7 @@ export class StartWidget {
   <div>
     <label>Drag Coefficient (Parachute):</label>
     <input type="number" id="dragCoeffPara" value="${this.initialValues.dragCoefficientForParachute}" min="0.001"
-      max="0.3" step="0.001">
+      max="0.4" step="0.001">
   </div>
 
 
@@ -138,7 +138,7 @@ export class StartWidget {
 
     <label>Lift Coefficient (Parachute):</label>
     <input type="number" id="liftCoeffPara" value="${this.initialValues.liftCoefficientForParachute}" min="0.001"
-      max="0.2" step="0.001">
+      max="0.4" step="0.001">
   </div>
 
 
