@@ -1,17 +1,17 @@
 export class EndWidget {
-  constructor() {
-    this.isVisible = false;
-    this.finalValues = {};
-    this.simulationStats = {};
-    this.onRestartCallback = null;
-    this.onExportCallback = null;
-  }
+    constructor() {
+        this.isVisible = false;
+        this.finalValues = {};
+        this.simulationStats = {};
+        this.onRestartCallback = null;
+        this.onExportCallback = null;
+    }
 
-  createWidget() {
-    // Create overlay container
-    this.overlay = document.createElement('div');
-    this.overlay.id = 'end-widget-overlay';
-    this.overlay.style.cssText = `
+    createWidget() {
+        // Create overlay container
+        this.overlay = document.createElement('div');
+        this.overlay.id = 'end-widget-overlay';
+        this.overlay.style.cssText = `
       position: fixed;
       top: 0;
       left: 0;
@@ -25,9 +25,9 @@ export class EndWidget {
       font-family: Arial, sans-serif;
     `;
 
-    // Create widget container
-    this.widget = document.createElement('div');
-    this.widget.style.cssText = `
+        // Create widget container
+        this.widget = document.createElement('div');
+        this.widget.style.cssText = `
       background: rgba(42, 42, 42, 0.65);
       border-radius: 10px;
       padding: 30px;
@@ -38,15 +38,15 @@ export class EndWidget {
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
       backdrop-filter: blur(4px);
     `;
-    // Hide scrollbars but keep scrolling
-    this.widget.classList.add('scroll-container');
+        // Hide scrollbars but keep scrolling
+        this.widget.classList.add('scroll-container');
 
-    this.overlay.appendChild(this.widget);
-    document.body.appendChild(this.overlay);
+        this.overlay.appendChild(this.widget);
+        document.body.appendChild(this.overlay);
 
-    // Add styles
-    const style = document.createElement('style');
-    style.textContent = `
+        // Add styles
+        const style = document.createElement('style');
+        style.textContent = `
       #end-widget-overlay .stat-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -117,26 +117,26 @@ export class EndWidget {
         display: none; /* Chrome, Safari, Opera */
       }
     `;
-    
-    document.head.appendChild(style);
-  }
 
-  show(finalValues, simulationStats) {
-    this.finalValues = finalValues;
-    this.simulationStats = simulationStats;
-    
-    if (!this.overlay) {
-      this.createWidget();
+        document.head.appendChild(style);
     }
-    
-    this.updateContent();
-    this.isVisible = true;
-    this.overlay.style.display = 'flex';
-  }
 
-  updateContent() {
-   
-    this.widget.innerHTML = `
+    show(finalValues, simulationStats) {
+        this.finalValues = finalValues;
+        this.simulationStats = simulationStats;
+
+        if (!this.overlay) {
+            this.createWidget();
+        }
+
+        this.updateContent();
+        this.isVisible = true;
+        this.overlay.style.display = 'flex';
+    }
+
+    updateContent() {
+
+        this.widget.innerHTML = `
       <h2 style="margin-top: 0; color: #4CAF50; text-align: center;">Simulation Results</h2>
       
       
@@ -239,29 +239,29 @@ export class EndWidget {
       </div>
     `;
 
-    this.setupEventListeners();
-  }
-
-  setupEventListeners() {
-  
-    const closeButton = document.getElementById('close-results');
-
-    closeButton?.addEventListener('click', () => {
-      this.hide();
-    });
-  }
-
-  calculateTotalSpeed() {
-    const vel = this.finalValues.velocity;
-    return Math.sqrt(vel.x * vel.x + vel.y * vel.y + vel.z * vel.z);
-  }
-  
-  hide() {
-    this.isVisible = false;
-    if (this.overlay) {
-      this.overlay.style.display = 'none';
+        this.setupEventListeners();
     }
-  }
+
+    setupEventListeners() {
+
+        const closeButton = document.getElementById('close-results');
+
+        closeButton?.addEventListener('click', () => {
+            this.hide();
+        });
+    }
+
+    calculateTotalSpeed() {
+        const vel = this.finalValues.velocity;
+        return Math.sqrt(vel.x * vel.x + vel.y * vel.y + vel.z * vel.z);
+    }
+
+    hide() {
+        this.isVisible = false;
+        if (this.overlay) {
+            this.overlay.style.display = 'none';
+        }
+    }
 
 
 }

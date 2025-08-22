@@ -1,38 +1,37 @@
-import * as THREE from 'three';
-
 export class StartWidget {
-  constructor() {
-    this.isVisible = true;
-    this.onStartCallback = null;
-    this.onPositionChangeCallback = null;
-    this.initialValues = {
-      // Skydiver properties
-      mass: 100,
-      area: 1,
-      parachuteArea: 10,
-      startPosition: { x: 3, y: 2000, z: 40 },
-      startVelocity: { x: 0, y: 0, z: 0 },
+    constructor() {
+        this.isVisible = true;
+        this.onStartCallback = null;
+        this.onPositionChangeCallback = null;
+        this.initialValues = {
+            // Skydiver properties
+            mass: 100,
+            area: 1,
+            parachuteArea: 10,
+            startPosition: {x: 3, y: 2000, z: 40},
+            startVelocity: {x: 0, y: 0, z: 0},
 
-      // Physics properties
-      gravity: 9.81,
-      airDensity: 1.225,
-      dragCoefficientBeforeParachute: 0.1,
-      dragCoefficientForParachute: 0.3,
-      liftCoefficientBeforeParachute: 0.09,
-      liftCoefficientForParachute: 0.22,
-      OMEGA: 7.2921159e-5,
-      windSpeed: { x: 0, y: 0, z: 0 },
-      latitude: 90,
+            // Physics properties
+            gravity: 9.81,
+            airDensity: 1.225,
+            dragCoefficientBeforeParachute: 0.1,
+            dragCoefficientForParachute: 0.3,
+            liftCoefficientBeforeParachute: 0.09,
+            liftCoefficientForParachute: 0.22,
+            OMEGA: 7.2921159e-5,
+            windSpeed: {x: 0, y: 0, z: 0},
+            latitude: 90,
 
-      // Simulation settings
-      autoOpenParachute: false,
-      parachuteOpenHeight: 1000,
-    };
-    this.htmlString = this.setHtml();
-    this.createWidget();
-  }
-  setHtml(){
-   return `
+            // Simulation settings
+            autoOpenParachute: false,
+            parachuteOpenHeight: 1000,
+        };
+        this.htmlString = this.setHtml();
+        this.createWidget();
+    }
+
+    setHtml() {
+        return `
 <h2 style="margin-top: 0; color: #4CAF50; text-align: center;">Skydiving Simulation Setup</h2>
 
 
@@ -186,7 +185,7 @@ export class StartWidget {
     step="50">
 
   <label>
-    <input type="checkbox" id="autoParachute" ${this.initialValues.autoOpenParachute ? 'checked' : '' }>
+    <input type="checkbox" id="autoParachute" ${this.initialValues.autoOpenParachute ? 'checked' : ''}>
     Auto-open Parachute
   </label>
 </div>
@@ -214,12 +213,13 @@ export class StartWidget {
   ">Reset to Defaults</button>
 </div>
 `;
-  }
-  createWidget() {
-    // Create overlay container
-    this.overlay = document.createElement('div');
-    this.overlay.id = 'start-widget-overlay';
-    this.overlay.style.cssText = `
+    }
+
+    createWidget() {
+        // Create overlay container
+        this.overlay = document.createElement('div');
+        this.overlay.id = 'start-widget-overlay';
+        this.overlay.style.cssText = `
       position: fixed;
       top: 0;
       left: 0;
@@ -233,9 +233,9 @@ export class StartWidget {
       font-family: Arial, sans-serif;
     `;
 
-    // Create widget container
-    this.widget = document.createElement('div');
-    this.widget.style.cssText = `
+        // Create widget container
+        this.widget = document.createElement('div');
+        this.widget.style.cssText = `
       background: rgba(42, 42, 42, 0.65);
       border-radius: 10px;
       padding: 30px;
@@ -246,14 +246,14 @@ export class StartWidget {
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
       backdrop-filter: blur(4px);
     `;
-    // Hide scrollbars but keep scrolling
-    this.widget.classList.add('scroll-container');
+        // Hide scrollbars but keep scrolling
+        this.widget.classList.add('scroll-container');
 
-    this.widget.innerHTML =this.htmlString;
+        this.widget.innerHTML = this.htmlString;
 
-    // Add styles for inputs
-    const style = document.createElement('style');
-    style.textContent = `
+        // Add styles for inputs
+        const style = document.createElement('style');
+        style.textContent = `
       #start-widget-overlay label {
         display: block;
         margin-top: 10px;
@@ -292,136 +292,136 @@ export class StartWidget {
       }
     `;
 
-    document.head.appendChild(style);
-    this.overlay.appendChild(this.widget);
-    document.body.appendChild(this.overlay);
+        document.head.appendChild(style);
+        this.overlay.appendChild(this.widget);
+        document.body.appendChild(this.overlay);
 
-    this.setupEventListeners();
-  }
-
-  setupEventListeners() {
-    const startButton = document.getElementById('start-simulation');
-    const resetButton = document.getElementById('reset-defaults');
-
-    startButton.addEventListener('click', () => {
-      this.collectValues();
-      this.hide();
-      if (this.onStartCallback) {
-        this.onStartCallback(this.initialValues);
-      }
-    });
-
-    resetButton.addEventListener('click', () => {
-      this.resetToDefaults();
-      this.notifyPositionChange();
-    });
-
-    // Add real-time position update listeners
-    this.setupPositionChangeListeners();
-  }
-
-  collectValues() {
-    // Collect all input values
-    this.initialValues.mass = parseFloat(document.getElementById('mass').value);
-    this.initialValues.area = parseFloat(document.getElementById('area').value);
-    this.initialValues.parachuteArea = parseFloat(document.getElementById('parachuteArea').value);
-
-    this.initialValues.startPosition.x = parseFloat(document.getElementById('startX').value);
-    this.initialValues.startPosition.y = parseFloat(document.getElementById('startY').value);
-    this.initialValues.startPosition.z = parseFloat(document.getElementById('startZ').value);
-
-    this.initialValues.startVelocity.x = parseFloat(document.getElementById('velX').value);
-    this.initialValues.startVelocity.y = parseFloat(document.getElementById('velY').value);
-    this.initialValues.startVelocity.z = parseFloat(document.getElementById('velZ').value);
-
-    this.initialValues.gravity = parseFloat(document.getElementById('gravity').value);
-    this.initialValues.airDensity = parseFloat(document.getElementById('airDensity').value);
-    this.initialValues.dragCoefficientBeforeParachute = parseFloat(document.getElementById('dragCoeffBefore').value);
-    this.initialValues.dragCoefficientForParachute = parseFloat(document.getElementById('dragCoeffPara').value);
-    this.initialValues.liftCoefficientBeforeParachute = parseFloat(document.getElementById('liftCoeffBefore').value);
-    this.initialValues.liftCoefficientForParachute = parseFloat(document.getElementById('liftCoeffPara').value);
-    this.initialValues.OMEGA = parseFloat(document.getElementById('omega').value);
-    this.initialValues.latitude = parseFloat(document.getElementById('latitude').value);
-
-    this.initialValues.windSpeed.x = parseFloat(document.getElementById('windX').value);
-    this.initialValues.windSpeed.y = parseFloat(document.getElementById('windY').value);
-    this.initialValues.windSpeed.z = parseFloat(document.getElementById('windZ').value);
-
-    this.initialValues.autoOpenParachute = document.getElementById('autoParachute').checked;
-    this.initialValues.parachuteOpenHeight = parseFloat(document.getElementById('parachuteHeight').value);
-  }
-
-  resetToDefaults() {
-    document.getElementById('mass').value = 100;
-    document.getElementById('area').value = 1;
-    document.getElementById('parachuteArea').value = 10;
-
-    document.getElementById('startX').value = 3;
-    document.getElementById('startY').value = 2000;
-    document.getElementById('startZ').value = 0;
-
-    document.getElementById('velX').value = 0;
-    document.getElementById('velY').value = 0;
-    document.getElementById('velZ').value = 0;
-
-    document.getElementById('gravity').value = 9.81;
-    document.getElementById('airDensity').value = 1.225;
-    document.getElementById('dragCoeffBefore').value = 0.005;
-    document.getElementById('dragCoeffPara').value = 0.005;
-    document.getElementById('liftCoeffBefore').value = 0.3;
-    document.getElementById('liftCoeffPara').value = 0.005;
-    document.getElementById('omega').value = 7.2921159e-5;
-    document.getElementById('latitude').value = 90;
-
-    document.getElementById('windX').value = 0;
-    document.getElementById('windY').value = 0;
-    document.getElementById('windZ').value = 0;
-
-    document.getElementById('autoParachute').checked = false;
-    document.getElementById('parachuteHeight').value = 1000;
-  }
-
-  setupPositionChangeListeners() {
-    const positionInputs = ['startX', 'startY', 'startZ'];
-
-    positionInputs.forEach(inputId => {
-      const input = document.getElementById(inputId);
-      if (input) {
-        input.addEventListener('input', () => {
-          this.notifyPositionChange();
-        });
-      }
-    });
-  }
-
-  notifyPositionChange() {
-    if (this.onPositionChangeCallback) {
-      const currentPosition = {
-        x: parseFloat(document.getElementById('startX').value) || 0,
-        y: parseFloat(document.getElementById('startY').value) || 0,
-        z: parseFloat(document.getElementById('startZ').value) || 0
-      };
-      this.onPositionChangeCallback(currentPosition);
+        this.setupEventListeners();
     }
-  }
 
-  show() {
-    this.isVisible = true;
-    this.overlay.style.display = 'flex';
-  }
+    setupEventListeners() {
+        const startButton = document.getElementById('start-simulation');
+        const resetButton = document.getElementById('reset-defaults');
 
-  hide() {
-    this.isVisible = false;
-    this.overlay.style.display = 'none';
-  }
+        startButton.addEventListener('click', () => {
+            this.collectValues();
+            this.hide();
+            if (this.onStartCallback) {
+                this.onStartCallback(this.initialValues);
+            }
+        });
 
-  onStart(callback) {
-    this.onStartCallback = callback;
-  }
+        resetButton.addEventListener('click', () => {
+            this.resetToDefaults();
+            this.notifyPositionChange();
+        });
 
-  onPositionChange(callback) {
-    this.onPositionChangeCallback = callback;
-  }
+        // Add real-time position update listeners
+        this.setupPositionChangeListeners();
+    }
+
+    collectValues() {
+        // Collect all input values
+        this.initialValues.mass = parseFloat(document.getElementById('mass').value);
+        this.initialValues.area = parseFloat(document.getElementById('area').value);
+        this.initialValues.parachuteArea = parseFloat(document.getElementById('parachuteArea').value);
+
+        this.initialValues.startPosition.x = parseFloat(document.getElementById('startX').value);
+        this.initialValues.startPosition.y = parseFloat(document.getElementById('startY').value);
+        this.initialValues.startPosition.z = parseFloat(document.getElementById('startZ').value);
+
+        this.initialValues.startVelocity.x = parseFloat(document.getElementById('velX').value);
+        this.initialValues.startVelocity.y = parseFloat(document.getElementById('velY').value);
+        this.initialValues.startVelocity.z = parseFloat(document.getElementById('velZ').value);
+
+        this.initialValues.gravity = parseFloat(document.getElementById('gravity').value);
+        this.initialValues.airDensity = parseFloat(document.getElementById('airDensity').value);
+        this.initialValues.dragCoefficientBeforeParachute = parseFloat(document.getElementById('dragCoeffBefore').value);
+        this.initialValues.dragCoefficientForParachute = parseFloat(document.getElementById('dragCoeffPara').value);
+        this.initialValues.liftCoefficientBeforeParachute = parseFloat(document.getElementById('liftCoeffBefore').value);
+        this.initialValues.liftCoefficientForParachute = parseFloat(document.getElementById('liftCoeffPara').value);
+        this.initialValues.OMEGA = parseFloat(document.getElementById('omega').value);
+        this.initialValues.latitude = parseFloat(document.getElementById('latitude').value);
+
+        this.initialValues.windSpeed.x = parseFloat(document.getElementById('windX').value);
+        this.initialValues.windSpeed.y = parseFloat(document.getElementById('windY').value);
+        this.initialValues.windSpeed.z = parseFloat(document.getElementById('windZ').value);
+
+        this.initialValues.autoOpenParachute = document.getElementById('autoParachute').checked;
+        this.initialValues.parachuteOpenHeight = parseFloat(document.getElementById('parachuteHeight').value);
+    }
+
+    resetToDefaults() {
+        document.getElementById('mass').value = 100;
+        document.getElementById('area').value = 1;
+        document.getElementById('parachuteArea').value = 10;
+
+        document.getElementById('startX').value = 3;
+        document.getElementById('startY').value = 2000;
+        document.getElementById('startZ').value = 0;
+
+        document.getElementById('velX').value = 0;
+        document.getElementById('velY').value = 0;
+        document.getElementById('velZ').value = 0;
+
+        document.getElementById('gravity').value = 9.81;
+        document.getElementById('airDensity').value = 1.225;
+        document.getElementById('dragCoeffBefore').value = 0.005;
+        document.getElementById('dragCoeffPara').value = 0.005;
+        document.getElementById('liftCoeffBefore').value = 0.3;
+        document.getElementById('liftCoeffPara').value = 0.005;
+        document.getElementById('omega').value = 7.2921159e-5;
+        document.getElementById('latitude').value = 90;
+
+        document.getElementById('windX').value = 0;
+        document.getElementById('windY').value = 0;
+        document.getElementById('windZ').value = 0;
+
+        document.getElementById('autoParachute').checked = false;
+        document.getElementById('parachuteHeight').value = 1000;
+    }
+
+    setupPositionChangeListeners() {
+        const positionInputs = ['startX', 'startY', 'startZ'];
+
+        positionInputs.forEach(inputId => {
+            const input = document.getElementById(inputId);
+            if (input) {
+                input.addEventListener('input', () => {
+                    this.notifyPositionChange();
+                });
+            }
+        });
+    }
+
+    notifyPositionChange() {
+        if (this.onPositionChangeCallback) {
+            const currentPosition = {
+                x: parseFloat(document.getElementById('startX').value) || 0,
+                y: parseFloat(document.getElementById('startY').value) || 0,
+                z: parseFloat(document.getElementById('startZ').value) || 0
+            };
+            this.onPositionChangeCallback(currentPosition);
+        }
+    }
+
+    show() {
+        this.isVisible = true;
+        this.overlay.style.display = 'flex';
+    }
+
+    hide() {
+        this.isVisible = false;
+        this.overlay.style.display = 'none';
+    }
+
+    onStart(callback) {
+        this.onStartCallback = callback;
+    }
+
+    onPositionChange(callback) {
+        this.onPositionChangeCallback = callback;
+    }
 
 
 }

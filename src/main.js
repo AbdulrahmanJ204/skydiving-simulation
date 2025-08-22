@@ -1,3 +1,3 @@
-import { SimulationManager } from './core/SimulationManager.js';
+import {SimulationManager} from './core/SimulationManager.js';
 
 const simulation = new SimulationManager();
