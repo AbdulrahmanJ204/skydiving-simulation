@@ -72,11 +72,13 @@ export class CameraManager {
     return this.camera;
   }
 
-  getControls() {
-    return this.controls;
-  }
+    addGuiFolder(gui){
+       this.folder = gui.addFolder('Controls');
+       this.folder.close();
+       this.folder.add( this.controls,'minDistance').min(1).max(30).step(1);
+       this.folder.add( this.controls,'maxDistance').min(1).max(30).step(1);
+       this.folder.add( this.controls,'minPolarAngle').min(0.01).max(this.controls.maxPolarAngle-0.1);
 
-  getSizes() {
-    return this.sizes;
-  }
+    }
+
 }

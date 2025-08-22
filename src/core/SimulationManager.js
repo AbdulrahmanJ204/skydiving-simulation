@@ -118,6 +118,7 @@ export class SimulationManager {
       this.applyInitialValues(initialValues);
 
 
+      this.uiManager.addControlsFolder(this.cameraManager);
       this.uiManager.addSkyDiverFolder(this.skyDiver);
       this.uiManager.addPhysicsFolder(this.physics);
 
@@ -391,15 +392,4 @@ export class SimulationManager {
     }
   }
 
-
-  getSceneManager() { return this.sceneManager; }
-  getModelLoader() { return this.modelLoader; }
-  getCameraManager() { return this.cameraManager; }
-  getInputManager() { return this.inputManager; }
-  getUIManager() { return this.uiManager; }
-  getSkyDiver() { return this.skyDiver; }
-  getPhysics() { return this.physics; }
-  getModels() { return this.models; }
-  getSimulationStats() { return this.simulationStats; }
-  isRunning() { return this.isSimulationRunning; }
 }

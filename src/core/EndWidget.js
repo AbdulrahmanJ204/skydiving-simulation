@@ -263,10 +263,5 @@ export class EndWidget {
     }
   }
 
-  
-  destroy() {
-    if (this.overlay && this.overlay.parentNode) {
-      this.overlay.parentNode.removeChild(this.overlay);
-    }
-  }
+
 }

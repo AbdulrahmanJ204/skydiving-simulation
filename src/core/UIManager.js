@@ -110,6 +110,11 @@ export class UIManager {
       physics.addGuiFolder(this.gui);
     }
   }
+  addControlsFolder(cameraManager){
+      if(cameraManager && cameraManager.addGuiFolder) {
+          cameraManager.addGuiFolder(this.gui);
+      }
+  }
 
   toggle() {
     this.gui.show(this.gui._hidden);
@@ -117,8 +122,6 @@ export class UIManager {
     this.dataOverlay.style.display = this.dataOverlay.style.display === 'none' ? 'block' : 'none';
   }
 
-  getGUI() {
-    return this.gui;
-  }
+
 
 }

@@ -423,13 +423,5 @@ export class StartWidget {
     this.onPositionChangeCallback = callback;
   }
 
-  getValues() {
-    return this.initialValues;
-  }
 
-  destroy() {
-    if (this.overlay && this.overlay.parentNode) {
-      this.overlay.parentNode.removeChild(this.overlay);
-    }
-  }
 }

@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JavaScriptClasses</ID>
+  <OriginalElement>D:/skydiving-simulation/src</OriginalElement>
+  <nodes>
+    <node x="2484.0" y="870.0">D:/skydiving-simulation/src/physics/gravityForce.js#GravityForce</node>
+    <node x="2695.0" y="442.0">D:/skydiving-simulation/src/core/ModelLoader.js#ModelLoader</node>
+    <node x="2382.0" y="466.0">D:/skydiving-simulation/src/core/EndWidget.js#EndWidget</node>
+    <node x="2076.0" y="466.0">D:/skydiving-simulation/src/core/InputManager.js#InputManager</node>
+    <node x="1622.0" y="465.5">D:/skydiving-simulation/src/physics/physics.js#Physics</node>
+    <node x="1638.0" y="870.0">D:/skydiving-simulation/src/physics/coriolisForce.js#CoriolisForce</node>
+    <node x="1387.0" y="454.0">D:/skydiving-simulation/src/core/SceneManager.js#SceneManager</node>
+    <node x="984.0" y="394.0">D:/skydiving-simulation/src/core/StartWidget.js#StartWidget</node>
+    <node x="1265.5" y="-344.0">D:/skydiving-simulation/src/core/SimulationManager.js#SimulationManager</node>
+    <node x="2060.0" y="858.0">D:/skydiving-simulation/src/physics/dragForce.js#DragForce</node>
+    <node x="1475.9487179487178" y="1058.0">D:/skydiving-simulation/src/physics/force.js#Force</node>
+    <node x="691.0" y="430.0">D:/skydiving-simulation/src/physics/skyDiver.js#SkyDiver</node>
+    <node x="281.0" y="466.0">D:/skydiving-simulation/src/core/CameraManager.js#CameraManager</node>
+    <node x="1202.0" y="822.0">D:/skydiving-simulation/src/physics/LiftForce.js#LiftForce</node>
+    <node x="-6.0" y="478.0">D:/skydiving-simulation/src/core/UIManager.js#UIManager</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="D:/skydiving-simulation/src/core/SimulationManager.js#SimulationManager" target="D:/skydiving-simulation/src/core/StartWidget.js#StartWidget" relationship="CREATE">
+      <point x="0.0" y="344.0" />
+      <point x="1484.5" y="369.0" />
+      <point x="1175.5" y="369.0" />
+      <point x="0.0" y="-188.0" />
+    </edge>
+    <edge source="D:/skydiving-simulation/src/core/SimulationManager.js#SimulationManager" target="D:/skydiving-simulation/src/core/SceneManager.js#SceneManager" relationship="CREATE">
+      <point x="0.0" y="344.0" />
+      <point x="0.0" y="-128.0" />
+    </edge>
+    <edge source="D:/skydiving-simulation/src/physics/physics.js#Physics" target="D:/skydiving-simulation/src/physics/LiftForce.js#LiftForce" relationship="CREATE">
+      <point x="0.0" y="116.5" />
+      <point x="1839.0" y="796.0" />
+      <point x="1410.0" y="796.0" />
+      <point x="0.0" y="-92.0" />
+    </edge>
+    <edge source="D:/skydiving-simulation/src/physics/LiftForce.js#LiftForce" target="D:/skydiving-simulation/src/physics/force.js#Force" relationship="GENERALIZATION">
+      <point x="0.0" y="92.0" />
+      <point x="1410.0" y="1027.0" />
+      <point x="2000.6987179487178" y="1027.0" />
+      <point x="2000.6987179487178" y="1037.0" />
+      <point x="1777.4487179487178" y="1037.0" />
+      <point x="100.5" y="-56.0" />
+    </edge>
+    <edge source="D:/skydiving-simulation/src/physics/gravityForce.js#GravityForce" target="D:/skydiving-simulation/src/physics/force.js#Force" relationship="GENERALIZATION">
+      <point x="0.0" y="44.0" />
+      <point x="2685.0" y="1027.0" />
+      <point x="2000.6987179487178" y="1027.0" />
+      <point x="2000.6987179487178" y="1037.0" />
+      <point x="1777.4487179487178" y="1037.0" />
+      <point x="100.5" y="-56.0" />
+    </edge>
+    <edge source="D:/skydiving-simulation/src/physics/physics.js#Physics" target="D:/skydiving-simulation/src/physics/gravityForce.js#GravityForce" relationship="CREATE">
+      <point x="0.0" y="116.5" />
+      <point x="1839.0" y="796.0" />
+      <point x="2685.0" y="796.0" />
+      <point x="0.0" y="-44.0" />
+    </edge>
+    <edge source="D:/skydiving-simulation/src/core/SimulationManager.js#SimulationManager" target="D:/skydiving-simulation/src/core/UIManager.js#UIManager" relationship="CREATE">
+      <point x="0.0" y="344.0" />
+      <point x="1484.5" y="369.0" />
+      <point x="127.5" y="369.0" />
+      <point x="0.0" y="-104.0" />
+    </edge>
+    <edge source="D:/skydiving-simulation/src/core/SimulationManager.js#SimulationManager" target="D:/skydiving-simulation/src/core/EndWidget.js#EndWidget" relationship="CREATE">
+      <point x="0.0" y="344.0" />
+      <point x="1484.5" y="369.0" />
+      <point x="2528.5" y="369.0" />
+      <point x="0.0" y="-116.0" />
+    </edge>
+    <edge source="D:/skydiving-simulation/src/physics/physics.js#Physics" target="D:/skydiving-simulation/src/physics/coriolisForce.js#CoriolisForce" relationship="CREATE">
+      <point x="0.0" y="116.5" />
+      <point x="0.0" y="-44.0" />
+    </edge>
+    <edge source="D:/skydiving-simulation/src/core/SimulationManager.js#SimulationManager" target="D:/skydiving-simulation/src/physics/skyDiver.js#SkyDiver" relationship="CREATE">
+      <point x="0.0" y="344.0" />
+      <point x="1484.5" y="369.0" />
+      <point x="827.5" y="369.0" />
+      <point x="0.0" y="-152.0" />
+    </edge>
+    <edge source="D:/skydiving-simulation/src/core/SimulationManager.js#SimulationManager" target="D:/skydiving-simulation/src/core/InputManager.js#InputManager" relationship="CREATE">
+      <point x="0.0" y="344.0" />
+      <point x="1484.5" y="369.0" />
+      <point x="2219.0" y="369.0" />
+      <point x="0.0" y="-116.0" />
+    </edge>
+    <edge source="D:/skydiving-simulation/src/core/SimulationManager.js#SimulationManager" target="D:/skydiving-simulation/src/core/CameraManager.js#CameraManager" relationship="CREATE">
+      <point x="0.0" y="344.0" />
+      <point x="1484.5" y="369.0" />
+      <point x="476.0" y="369.0" />
+      <point x="0.0" y="-116.0" />
+    </edge>
+    <edge source="D:/skydiving-simulation/src/physics/coriolisForce.js#CoriolisForce" target="D:/skydiving-simulation/src/physics/force.js#Force" relationship="GENERALIZATION">
+      <point x="0.0" y="44.0" />
+      <point x="1839.0" y="1027.0" />
+      <point x="2000.6987179487178" y="1027.0" />
+      <point x="2000.6987179487178" y="1037.0" />
+      <point x="1777.4487179487178" y="1037.0" />
+      <point x="100.5" y="-56.0" />
+    </edge>
+    <edge source="D:/skydiving-simulation/src/core/SimulationManager.js#SimulationManager" target="D:/skydiving-simulation/src/core/ModelLoader.js#ModelLoader" relationship="CREATE">
+      <point x="0.0" y="344.0" />
+      <point x="1484.5" y="369.0" />
+      <point x="2908.0" y="369.0" />
+      <point x="0.0" y="-140.0" />
+    </edge>
+    <edge source="D:/skydiving-simulation/src/physics/physics.js#Physics" target="D:/skydiving-simulation/src/physics/physics.js#Physics" relationship="DEPENDENCY">
+      <point x="-108.5" y="-116.5" />
+      <point x="1730.5" y="445.5" />
+      <point x="1602.0" y="445.5" />
+      <point x="1602.0" y="582.0" />
+      <point x="-217.0" y="0.0" />
+    </edge>
+    <edge source="D:/skydiving-simulation/src/physics/physics.js#Physics" target="D:/skydiving-simulation/src/physics/force.js#Force" relationship="CREATE">
+      <point x="0.0" y="116.5" />
+      <point x="1839.0" y="796.0" />
+      <point x="1191.5" y="796.0" />
+      <point x="1191.5" y="1037.0" />
+      <point x="1576.4487179487178" y="1037.0" />
+      <point x="-100.5" y="-56.0" />
+    </edge>
+    <edge source="D:/skydiving-simulation/src/physics/physics.js#Physics" target="D:/skydiving-simulation/src/physics/dragForce.js#DragForce" relationship="CREATE">
+      <point x="0.0" y="116.5" />
+      <point x="1839.0" y="796.0" />
+      <point x="2262.0" y="796.0" />
+      <point x="0.0" y="-56.0" />
+    </edge>
+    <edge source="D:/skydiving-simulation/src/physics/dragForce.js#DragForce" target="D:/skydiving-simulation/src/physics/force.js#Force" relationship="GENERALIZATION">
+      <point x="0.0" y="56.0" />
+      <point x="2262.0" y="1027.0" />
+      <point x="2000.6987179487178" y="1027.0" />
+      <point x="2000.6987179487178" y="1037.0" />
+      <point x="1777.4487179487178" y="1037.0" />
+      <point x="100.5" y="-56.0" />
+    </edge>
+    <edge source="D:/skydiving-simulation/src/core/SimulationManager.js#SimulationManager" target="D:/skydiving-simulation/src/physics/physics.js#Physics" relationship="CREATE">
+      <point x="0.0" y="344.0" />
+      <point x="1484.5" y="369.0" />
+      <point x="1947.5" y="369.0" />
+      <point x="108.5" y="-116.5" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic" zoom="0.37718462027327615" showDependencies="true" x="1567.5" y="422.9999999999999" />
+  <SelectedNodes>
+    <node>D:/skydiving-simulation/src/core/SimulationManager.js#SimulationManager</node>
+  </SelectedNodes>
+  <Categories>
+    <Category>Constructors</Category>
+    <Category>Fields</Category>
+    <Category>Methods</Category>
+    <Category>Properties</Category>
+  </Categories>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+
