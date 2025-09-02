@@ -8,6 +8,254 @@
 </head>
 <body>
 <canvas class="webgl"></canvas>
+
+<!-- Start Widget Overlay -->
+<div id="start-widget-overlay">
+    <div id="start-widget-container">
+        <h2 style="margin-top: 0; color: #4CAF50; text-align: center;">Skydiving Simulation Setup</h2>
+
+        <!-- Skydiver Properties -->
+        <div>
+            <h3 style="color: #81C784; border-bottom: 1px solid #555; padding-bottom: 5px; padding-top: 5px;">Skydiver Properties</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 40px; margin-right: 15px">
+                <div>
+                    <label>Mass (kg):</label>
+                    <input type="number" id="mass" value="100" min="50" max="200" step="1">
+                </div>
+                <div>
+                    <label>Body Area (m²):</label>
+                    <input type="number" id="area" value="1" min="0.5" max="3" step="0.1">
+                </div>
+                <div>
+                    <label>Parachute Area (m²):</label>
+                    <input type="number" id="parachuteArea" value="10" min="5" max="50" step="1">
+                </div>
+            </div>
+
+            <h4 style="color: #A5D6A7; margin-top: 25px;">Start Position</h4>
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 40px; margin-right: 15px">
+                <div>
+                    <label>X Position:</label>
+                    <input type="number" id="startX" value="3" step="50">
+                </div>
+                <div>
+                    <label>Y Position (Height):</label>
+                    <input type="number" id="startY" value="2000" min="100" max="10000" step="50">
+                </div>
+                <div>
+                    <label>Z Position:</label>
+                    <input type="number" id="startZ" value="40" step="50">
+                </div>
+            </div>
+            
+            <h4 style="color: #A5D6A7; margin-top: 20px;">Initial Velocity</h4>
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 40px; margin-right: 15px">
+                <div>
+                    <label>X Velocity (m/s):</label>
+                    <input type="number" id="velX" value="0" step="0.1">
+                </div>
+                <div>
+                    <label>Y Velocity (m/s):</label>
+                    <input type="number" id="velY" value="0" step="0.1">
+                </div>
+                <div>
+                    <label>Z Velocity (m/s):</label>
+                    <input type="number" id="velZ" value="0" step="0.1">
+                </div>
+            </div>
+        </div>
+
+        <!-- Physics Properties -->
+        <h3 style="color: #81C784; border-bottom: 1px solid #555; padding-bottom: 5px;">Physics Properties</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-right: 15px">
+            <div>
+                <label>Gravity (m/s²):</label>
+                <input type="number" id="gravity" value="9.81" min="-20" max="20" step="0.1">
+            </div>
+            <div>
+                <label>Air Density (kg/m³):</label>
+                <input type="number" id="airDensity" value="1.225" min="0.1" max="5" step="0.01">
+            </div>
+            <div>
+                <label>Drag Coefficient (Before Parachute):</label>
+                <input type="number" id="dragCoeffBefore" value="0.1" min="0.001" max="0.2" step="0.001">
+            </div>
+            <div>
+                <label>Drag Coefficient (Parachute):</label>
+                <input type="number" id="dragCoeffPara" value="0.3" min="0.001" max="0.4" step="0.001">
+            </div>
+            <div>
+                <label>Lift Coefficient (Before Parachute):</label>
+                <input type="number" id="liftCoeffBefore" value="0.09" min="0.001" max="0.15" step="0.01">
+            </div>
+            <div>
+                <label>Lift Coefficient (Parachute):</label>
+                <input type="number" id="liftCoeffPara" value="0.22" min="0.001" max="0.4" step="0.001">
+            </div>
+            <div>
+                <label>Earth Rotation OMEGA (rad/s):</label>
+                <input type="number" id="omega" value="7.2921159e-5" min="0" max="0.0001" step="0.000001">
+            </div>
+            <div>
+                <label>Latitude (degrees):</label>
+                <input type="number" id="latitude" value="90" min="-180" max="180" step="1">
+            </div>
+        </div>
+
+        <h4 style="color: #A5D6A7; margin-top: 20px;">Wind Speed</h4>
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 40px; margin-right: 15px">
+            <div>
+                <label>Wind X (m/s):</label>
+                <input type="number" id="windX" value="0" step="0.1">
+            </div>
+            <div>
+                <label>Wind Y (m/s):</label>
+                <input type="number" id="windY" value="0" step="0.1">
+            </div>
+            <div>
+                <label>Wind Z (m/s):</label>
+                <input type="number" id="windZ" value="0" step="0.1">
+            </div>
+        </div>
+        
+        <div>
+            <h4 style="color: #A5D6A7; margin-top: 20px;">Simulation Settings</h4>
+            <label>Parachute Open Height (m):</label>
+            <input type="number" id="parachuteHeight" value="1000" min="100" max="3000" step="50">
+
+            <label>
+                <input type="checkbox" id="autoParachute">
+                Auto-open Parachute
+            </label>
+        </div>
+
+        <div style="text-align: center; margin-top: 30px;">
+            <button id="start-simulation" style="
+                background: #4CAF50;
+                color: white;
+                border: none;
+                padding: 15px 30px;
+                font-size: 18px;
+                border-radius: 5px;
+                cursor: pointer;
+                margin-right: 10px;
+            ">Start Simulation</button>
+
+            <button id="reset-defaults" style="
+                background: #FF9800;
+                color: white;
+                border: none;
+                padding: 15px 30px;
+                font-size: 18px;
+                border-radius: 5px;
+                cursor: pointer;
+            ">Reset to Defaults</button>
+        </div>
+    </div>
+</div>
+
+<!-- End Widget Overlay -->
+<div id="end-widget-overlay">
+    <div id="end-widget-container">
+        <h2 style="margin-top: 0; color: #4CAF50; text-align: center;">Simulation Results</h2>
+        
+        <div class="stat-grid">
+            <!-- Final Position & Velocity -->
+            <div class="stat-section">
+                <h3 style="color: #81C784; margin-top: 0;">Final Position</h3>
+                <div class="stat-item">
+                    <span class="stat-label">X Position:</span>
+                    <span class="stat-value" id="final-x-pos">0.00 m</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Y Position (Height):</span>
+                    <span class="stat-value" id="final-y-pos">0.00 m</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Z Position:</span>
+                    <span class="stat-value" id="final-z-pos">0.00 m</span>
+                </div>
+                
+                <h4 style="color: #A5D6A7; margin-top: 15px;">Final Velocity</h4>
+                <div class="stat-item">
+                    <span class="stat-label">X Velocity:</span>
+                    <span class="stat-value" id="final-x-vel">0.00 m/s</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Y Velocity:</span>
+                    <span class="stat-value" id="final-y-vel">0.00 m/s</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Z Velocity:</span>
+                    <span class="stat-value" id="final-z-vel">0.00 m/s</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label highlight">Total Speed:</span>
+                    <span class="stat-value highlight" id="total-speed">0.00 m/s</span>
+                </div>
+            </div>
+            
+            <!-- Simulation Statistics -->
+            <div class="stat-section">
+                <h3 style="color: #81C784; margin-top: 0;">Flight Statistics</h3>
+                <div class="stat-item">
+                    <span class="stat-label">Max Speed:</span>
+                    <span class="stat-value" id="max-speed">0.00 m/s</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Max Altitude:</span>
+                    <span class="stat-value" id="max-altitude">0.00 m</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Distance Traveled:</span>
+                    <span class="stat-value" id="total-distance">0.00 m</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Parachute Opened:</span>
+                    <span class="stat-value" id="parachute-opened">No</span>
+                </div>
+                <div class="stat-item" id="parachute-time-item" style="display: none;">
+                    <span class="stat-label">Parachute Open Time:</span>
+                    <span class="stat-value" id="parachute-open-time">0.0 s</span>
+                </div>
+                <div class="stat-item" id="parachute-height-item" style="display: none;">
+                    <span class="stat-label">Parachute Open Height:</span>
+                    <span class="stat-value" id="parachute-open-height">0.00 m</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Forces & Physics -->
+        <div class="stat-section">
+            <h3 style="color: #81C784; margin-top: 0;">Final Forces</h3>
+            <div class="stat-item">
+                <span class="stat-label">Gravity Force:</span>
+                <span class="stat-value" id="gravity-force">0.00 N</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Drag Force:</span>
+                <span class="stat-value" id="drag-force">0.00 N</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Lift Force:</span>
+                <span class="stat-value" id="lift-force">0.00 N</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Coriolis Force:</span>
+                <span class="stat-value" id="coriolis-force">0.00 N</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Total Force:</span>
+                <span class="stat-value" id="total-force">0.00 N</span>
+            </div>
+        </div>
+        
+        <div style="text-align: center; margin-top: 30px;">
+            <button id="close-results" class="close-btn">Close</button>
+        </div>
+    </div>
+</div>
+
 <script src="./main.js" type="module"></script>
 </body>
 </html>
