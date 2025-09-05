@@ -6,9 +6,9 @@ export class StartWidget {
         this.initialValues = {
             // Skydiver properties
             mass: 100,
-            area: 1,
-            parachuteArea: 10,
-            startPosition: {x: 3, y: 2000, z: 40},
+            area: 2,
+            parachuteArea: 25,
+            startPosition: {x: 3, y: 1000, z: 40},
             startVelocity: {x: 0, y: 0, z: 0},
 
             // Physics properties
@@ -24,7 +24,7 @@ export class StartWidget {
 
             // Simulation settings
             autoOpenParachute: false,
-            parachuteOpenHeight: 1000,
+            parachuteOpenHeight: 100,
         };
         this.htmlString = this.setHtml();
         this.createWidget();

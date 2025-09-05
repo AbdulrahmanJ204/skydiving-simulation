@@ -96,6 +96,14 @@ export class SimulationManager {
         this.inputManager.registerCallback("toggleGUI", () => {
             this.uiManager.toggle();
         });
+        this.inputManager.registerCallback("parachuteERROR", () => {
+            if(this.skyDiver.parachuteOpend){
+                this.skyDiver.area = 2;
+                this.physics.constructor.variables.dragCoefficientForParachute = 0.1
+                this.physics.constructor.variables.liftCoefficientForParachute = 0.08
+            }
+            
+        });
 
         this.inputManager.registerCallback("openParachute", () => {
             if (this.isSimulationRunning) {

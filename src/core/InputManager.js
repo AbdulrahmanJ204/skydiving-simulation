@@ -31,6 +31,9 @@ export class InputManager {
             case "h":
                 this.triggerCallback("toggleGUI");
                 break;
+            case "a":
+                this.triggerCallback("parachuteERROR");
+                break;
             case "f":
                 this.triggerCallback("openParachute");
                 break;
