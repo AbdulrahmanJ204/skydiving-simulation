@@ -24,6 +24,7 @@ export class SimulationManager {
     isSimulationRunning = false;
     raycaster;
     down;
+    //مشان الاحصائيات    
     simulationStats = {
         flightTime: 0,
         maxSpeed: 0,
@@ -37,13 +38,16 @@ export class SimulationManager {
         velocity: {x: 0, y: 0, z: 0},
     };
     previousPosition;
+
     sceneManager;
     modelLoader;
     cameraManager;
     inputManager;
     uiManager;
+
     skyDiver;
     physics;
+  
     models = {};
     startWidget;
     endWidget;
@@ -52,6 +56,7 @@ export class SimulationManager {
 
         this.clock = new THREE.Clock();
         this.lastTime = this.clock.getElapsedTime();
+   
         this.raycaster = new THREE.Raycaster();
         this.down = new THREE.Vector3(0, -1, 0);
 
@@ -246,17 +251,17 @@ export class SimulationManager {
         const rotationSpeedDt = this.rotationSpeed * deltaTime;
         const keyStates = this.inputManager.getKeyStates();
 
-        if (this.skyDiver.parachuteOpend) {
-            if (keyStates["ArrowLeft"]) {
-                this.skyDiver.rotateParachuteL(deltaTime);
-            }
-            if (keyStates["ArrowRight"]) {
-                this.skyDiver.rotateParachuteR(deltaTime);
-            }
-            if (keyStates["ArrowUp"]) {
-                this.skyDiver.rotateParachuteF(deltaTime);
-            }
-        } else {
+        // if (this.skyDiver.parachuteOpend) {
+        //     if (keyStates["ArrowLeft"]) {
+        //         this.skyDiver.rotateParachuteL(deltaTime);
+        //     }
+        //     if (keyStates["ArrowRight"]) {
+        //         this.skyDiver.rotateParachuteR(deltaTime);
+        //     }
+        //     if (keyStates["ArrowUp"]) {
+        //         this.skyDiver.rotateParachuteF(deltaTime);
+        //     }
+        // } else {
             if (keyStates["ArrowLeft"]) {
                 this.skyDiver.rotateBody(this.skyDiver.bodyFront, -rotationSpeedDt);
             }
@@ -269,7 +274,7 @@ export class SimulationManager {
             if (keyStates["ArrowDown"]) {
                 this.skyDiver.rotateBody(this.skyDiver.bodyRight, rotationSpeedDt);
             }
-        }
+        // }
     }
 
 
